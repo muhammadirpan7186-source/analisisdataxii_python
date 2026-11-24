@@ -1,0 +1,3085 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MPI Analisis Data: Dasar-dasar Python | SMA Khalifah Boarding School</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans, Nunito & Fira Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Nunito:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Bootstrap 5.3 CSS & Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+  <!-- Canvas Confetti CDN untuk selebrasi nilai >= 90 -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- HTML2PDF CDN untuk ekspor sertifikat PDF langsung -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    :root {
+      /* Palet Warna Utama sesuai instruksi */
+      --color-coral: #F8B2B2;
+      --color-coral-dark: #e68a8a;
+      --color-coral-soft: #fff0f0;
+      --color-purple: #8B639B;
+      --color-purple-dark: #6d497b;
+      --color-purple-soft: #f5eff8;
+      --color-indigo: #403D88;
+      --color-indigo-dark: #2d2b66;
+      --color-indigo-soft: #ececf8;
+
+      /* Warna Callout Tosca */
+      --color-tosca: #14B8A6;
+      --color-tosca-dark: #0f766e;
+      --color-tosca-bg: #E6FFFA;
+
+      /* Surface & Text Light Mode */
+      --bg-body: #f8f7fc;
+      --bg-card: #ffffff;
+      --text-main: #1e1b4b;
+      --text-muted: #5b5878;
+      --border-soft: rgba(64, 61, 136, 0.12);
+      --shadow-canva: 0 10px 28px -6px rgba(64, 61, 136, 0.1), 0 4px 10px -4px rgba(139, 99, 155, 0.08);
+      --shadow-hover: 0 18px 36px -8px rgba(64, 61, 136, 0.18);
+    }
+
+    [data-bs-theme="dark"] {
+      --bg-body: #121122;
+      --bg-card: #1c1a33;
+      --text-main: #f3f2ff;
+      --text-muted: #b4b1d1;
+      --border-soft: rgba(248, 178, 178, 0.16);
+      --color-coral-soft: rgba(248, 178, 178, 0.14);
+      --color-purple-soft: rgba(139, 99, 155, 0.2);
+      --color-indigo-soft: rgba(64, 61, 136, 0.35);
+      --color-tosca-bg: rgba(20, 184, 166, 0.15);
+      --color-tosca-dark: #5eead4;
+      --shadow-canva: 0 10px 28px -6px rgba(0, 0, 0, 0.45);
+      --shadow-hover: 0 18px 36px -8px rgba(0, 0, 0, 0.65);
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4, h5, h6, .font-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    code, pre, .font-code {
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* Header Canva-style Gradient */
+    .mpi-navbar {
+      background: linear-gradient(135deg, var(--color-indigo) 0%, var(--color-purple) 65%, #b57b9e 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 20px rgba(64, 61, 136, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+    }
+
+    .brand-badge {
+      background: var(--color-coral);
+      color: var(--color-indigo-dark);
+      font-weight: 800;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 50px;
+      letter-spacing: 0.03em;
+      display: inline-block;
+    }
+
+    .nav-pill-btn {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #fff;
+      border-radius: 12px;
+      padding: 0.42rem 0.78rem;
+      font-size: 0.86rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .nav-pill-btn:hover, .nav-pill-btn.active {
+      background: var(--color-coral);
+      color: var(--color-indigo-dark);
+      border-color: var(--color-coral);
+      transform: translateY(-1px);
+    }
+
+    /* Progress Bar Header */
+    .top-progress-wrapper {
+      background: rgba(0, 0, 0, 0.22);
+      padding: 0.45rem 0;
+    }
+
+    .progress-custom {
+      height: 10px;
+      border-radius: 999px;
+      background-color: rgba(255, 255, 255, 0.22);
+      overflow: hidden;
+    }
+
+    .progress-custom .progress-bar {
+      background: linear-gradient(90deg, var(--color-coral), #ffd6a5);
+      border-radius: 999px;
+      transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Hero Banner di Beranda */
+    .hero-canva {
+      background: linear-gradient(125deg, var(--color-indigo) 0%, var(--color-purple) 55%, var(--color-coral) 100%);
+      border-radius: 26px;
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-canva);
+    }
+
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      pointer-events: none;
+    }
+
+    /* Kartu Menu Utama 8 Item */
+    .menu-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 22px;
+      padding: 1.35rem;
+      box-shadow: var(--shadow-canva);
+      transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: pointer;
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--color-purple);
+    }
+
+    .menu-card.completed {
+      border-color: var(--color-tosca);
+    }
+
+    .menu-icon-box {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.55rem;
+      margin-bottom: 0.9rem;
+      transition: transform 0.25s ease;
+    }
+
+    .menu-card:hover .menu-icon-box {
+      transform: rotate(-6deg) scale(1.08);
+    }
+
+    /* Kartu Konten Umum */
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 24px;
+      padding: 1.75rem;
+      box-shadow: var(--shadow-canva);
+    }
+
+    /* Kotak Callout Tosca ("Tahukah Kamu?", "Fakta Menarik", "Info Penting") */
+    .callout-tosca {
+      background-color: var(--color-tosca-bg);
+      border-left: 6px solid var(--color-tosca);
+      border-top: 1px solid rgba(20, 184, 166, 0.3);
+      border-right: 1px solid rgba(20, 184, 166, 0.3);
+      border-bottom: 1px solid rgba(20, 184, 166, 0.3);
+      border-radius: 18px;
+      padding: 1.25rem 1.4rem;
+      color: var(--text-main);
+    }
+
+    .callout-tosca-title {
+      color: var(--color-tosca-dark);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.45rem;
+    }
+
+    /* Tombol Kustom Palet */
+    .btn-indigo {
+      background-color: var(--color-indigo);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 0.65rem 1.3rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .btn-indigo:hover {
+      background-color: var(--color-indigo-dark);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(64, 61, 136, 0.3);
+    }
+
+    .btn-purple {
+      background-color: var(--color-purple);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 0.65rem 1.3rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .btn-purple:hover {
+      background-color: var(--color-purple-dark);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-coral {
+      background-color: var(--color-coral);
+      color: var(--color-indigo-dark);
+      border: none;
+      border-radius: 14px;
+      padding: 0.65rem 1.3rem;
+      font-weight: 800;
+      transition: all 0.2s ease;
+    }
+    .btn-coral:hover {
+      background-color: var(--color-coral-dark);
+      color: var(--color-indigo-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Transisi Halaman */
+    .page-section {
+      display: none;
+      animation: fadeSlideIn 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Blok Kode Python Modern */
+    .code-window {
+      background: #181828;
+      color: #e2e8f0;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(139, 99, 155, 0.4);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .code-window-header {
+      background: #23233b;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .code-editor-area {
+      width: 100%;
+      background: #181828;
+      color: #a5f3fc;
+      border: none;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      resize: vertical;
+      outline: none;
+    }
+
+    .code-output-box {
+      background: #0f172a;
+      color: #4ade80;
+      padding: 0.95rem 1.1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      min-height: 70px;
+      white-space: pre-wrap;
+    }
+
+    /* Opsi Pilihan Ganda Kuis & Asesmen */
+    .quiz-option {
+      border: 2px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 0.9rem 1.15rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--bg-card);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .quiz-option:hover:not(.disabled) {
+      border-color: var(--color-purple);
+      background: var(--color-purple-soft);
+      transform: translateX(4px);
+    }
+
+    .quiz-option.selected {
+      border-color: var(--color-indigo);
+      background: var(--color-indigo-soft);
+      font-weight: 700;
+    }
+
+    .quiz-option.correct {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.14);
+    }
+
+    .quiz-option.wrong {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.14);
+    }
+
+    .option-badge {
+      min-width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--color-indigo);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.88rem;
+    }
+
+    /* Drag & Drop / Susun Blok Kode */
+    .code-block-chip {
+      background: linear-gradient(135deg, var(--color-indigo), var(--color-purple));
+      color: #fff;
+      padding: 0.75rem 1rem;
+      border-radius: 14px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.86rem;
+      cursor: grab;
+      user-select: none;
+      margin-bottom: 0.6rem;
+      box-shadow: 0 4px 10px rgba(64, 61, 136, 0.2);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .code-block-chip:active {
+      cursor: grabbing;
+      transform: scale(0.98);
+    }
+
+    .drop-zone-box {
+      min-height: 240px;
+      border: 2.5px dashed var(--color-purple);
+      border-radius: 18px;
+      padding: 1rem;
+      background: var(--color-purple-soft);
+      transition: background 0.2s ease;
+    }
+
+    .drop-zone-box.drag-over {
+      background: var(--color-coral-soft);
+      border-color: var(--color-indigo);
+    }
+
+    /* Matching Pairs Game */
+    .match-card {
+      border: 2px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 0.85rem 1rem;
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 600;
+    }
+
+    .match-card:hover:not(.matched) {
+      border-color: var(--color-purple);
+      transform: translateY(-2px);
+    }
+
+    .match-card.active-pick {
+      border-color: var(--color-indigo);
+      background: var(--color-coral-soft);
+      box-shadow: 0 0 0 3px rgba(248, 178, 178, 0.5);
+    }
+
+    .match-card.matched {
+      border-color: var(--color-tosca);
+      background: var(--color-tosca-bg);
+      color: var(--color-tosca-dark);
+      cursor: default;
+      opacity: 0.88;
+    }
+
+    /* Desain Sertifikat Hasil Belajar */
+    .certificate-wrapper {
+      background: #ffffff;
+      color: #1e1b4b;
+      border-radius: 20px;
+      padding: 14px;
+      background-image: linear-gradient(135deg, #F8B2B2 0%, #8B639B 50%, #403D88 100%);
+      box-shadow: 0 20px 45px rgba(64, 61, 136, 0.22);
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .certificate-inner {
+      background: #fffdfb;
+      border-radius: 14px;
+      padding: 2.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(139, 99, 155, 0.35);
+    }
+
+    .cert-corner-decor {
+      position: absolute;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      opacity: 0.16;
+      pointer-events: none;
+    }
+
+    .cert-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #403D88;
+    }
+
+    .cert-student-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+      color: #8B639B;
+      border-bottom: 3px solid #F8B2B2;
+      display: inline-block;
+      padding: 0 1.5rem 0.35rem;
+    }
+
+    /* Nav Tabs Materi */
+    .materi-pills .nav-link {
+      border-radius: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      border: 1.5px solid var(--border-soft);
+      margin: 0.25rem;
+      padding: 0.6rem 1.1rem;
+      transition: all 0.2s ease;
+    }
+
+    .materi-pills .nav-link.active {
+      background: linear-gradient(135deg, var(--color-indigo), var(--color-purple));
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 6px 14px rgba(64, 61, 136, 0.25);
+    }
+
+    /* Footer */
+    .mpi-footer {
+      background: var(--color-indigo-dark);
+      color: rgba(255, 255, 255, 0.88);
+      margin-top: auto;
+      border-top: 4px solid var(--color-coral);
+    }
+
+    /* Print Media Query khusus Sertifikat A4 Landscape */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #certificatePrintArea, #certificatePrintArea * {
+        visibility: visible;
+      }
+      #certificatePrintArea {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 8px;
+        box-shadow: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      @page {
+        size: A4 landscape;
+        margin: 8mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= HEADER / NAVBAR PROFESIONAL ================= -->
+  <header class="mpi-navbar">
+    <div class="container py-2">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <!-- Identitas Sekolah & Mapel -->
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-white text-dark rounded-4 p-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 46px; height: 46px;">
+            <!-- Logo SVG Python + Data -->
+            <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
+              <rect x="2" y="2" width="32" height="32" rx="9" fill="#403D88"/>
+              <path d="M10 24V18M16 24V12M22 24V15M28 24V9" stroke="#F8B2B2" stroke-width="3.2" stroke-linecap="round"/>
+              <circle cx="28" cy="9" r="2.5" fill="#14B8A6"/>
+            </svg>
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span class="brand-badge">SMA KHALIFAH BOARDING SCHOOL</span>
+              <span class="badge rounded-pill text-bg-light text-dark fw-bold">Kelas XII • Informatika</span>
+            </div>
+            <h1 class="h6 mb-0 mt-1 fw-bold text-white">Analisis Data: Dasar-dasar Python</h1>
+          </div>
+        </div>
+
+        <!-- Kontrol Cepat Header -->
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <button type="button" class="nav-pill-btn" onclick="navigateTo('home')" title="Kembali ke Menu Utama">
+            <i class="bi bi-house-door-fill"></i> <span class="d-none d-sm-inline">Home</span>
+          </button>
+
+          <button type="button" class="nav-pill-btn" id="btnMusicToggle" onclick="toggleBackgroundMusic()" title="Musik Latar Ambient ON/OFF">
+            <i class="bi bi-music-note-beamed" id="musicIcon"></i>
+            <span id="musicLabel" class="d-none d-md-inline">Musik: OFF</span>
+          </button>
+
+          <button type="button" class="nav-pill-btn" id="btnThemeToggle" onclick="toggleTheme()" title="Ubah Mode Terang / Gelap">
+            <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+            <span id="themeLabel" class="d-none d-md-inline">Gelap</span>
+          </button>
+
+          <button type="button" class="nav-pill-btn" data-bs-toggle="modal" data-bs-target="#resetModal" title="Ulangi Materi / Reset Progress">
+            <i class="bi bi-arrow-counterclockwise"></i> <span class="d-none d-lg-inline">Reset</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bilah Progress Belajar (%) Real-time -->
+    <div class="top-progress-wrapper">
+      <div class="container">
+        <div class="d-flex align-items-center justify-content-between small mb-1">
+          <span class="fw-bold"><i class="bi bi-rocket-takeoff-fill me-1 text-warning"></i> Progres Belajar Kamu</span>
+          <span class="fw-bold" id="progressPercentText">0% Selesai (0/8 Modul)</span>
+        </div>
+        <div class="progress progress-custom">
+          <div class="progress-bar" id="globalProgressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT AREA ================= -->
+  <main class="container my-4 flex-grow-1">
+
+    <!-- =========================================================
+         HALAMAN 0: MENU UTAMA (BERANDA)
+         ========================================================= -->
+    <section id="page-home" class="page-section active">
+      <!-- Hero Banner Modern -->
+      <div class="hero-canva p-4 p-md-5 mb-4">
+        <div class="hero-blob" style="width: 240px; height: 240px; top: -70px; right: -40px;"></div>
+        <div class="hero-blob" style="width: 150px; height: 150px; bottom: -50px; left: 25%;"></div>
+
+        <div class="row align-items-center g-4 position-relative">
+          <div class="col-lg-7">
+            <span class="badge rounded-pill px-3 py-2 mb-3 fw-bold" style="background: rgba(255,255,255,0.2); color: #fff;">
+              ✨ Deep Learning Interactive Media • Target: Produk Koding Python
+            </span>
+            <h2 class="display-6 fw-extrabold mb-3">
+              Ubah Data Mentah Menjadi Wawasan Cerdas dengan <span style="color: #F8B2B2; text-decoration: underline;">Python!</span>
+            </h2>
+            <p class="lead mb-4 opacity-90" style="font-size: 1.05rem;">
+              Selamat datang di Media Pembelajaran Interaktif Kelas XII. Pelajari logika dasar pemrograman Python untuk mengolah, menganalisis, dan menyimpulkan data nyata secara mandiri maupun kolaboratif.
+            </p>
+
+            <!-- Input Identitas Cepat Peserta Didik -->
+            <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.14); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.25);">
+              <div class="row g-2 align-items-center">
+                <div class="col-md-5">
+                  <input type="text" id="homeStudentName" class="form-control form-control-sm rounded-3 border-0 py-2" placeholder="Ketik Nama Lengkapmu..." oninput="syncStudentProfile(this.value, null)" />
+                </div>
+                <div class="col-md-4">
+                  <input type="text" id="homeStudentClass" class="form-control form-control-sm rounded-3 border-0 py-2" placeholder="Kelas (cth: XII IPA 1)" oninput="syncStudentProfile(null, this.value)" />
+                </div>
+                <div class="col-md-3 d-grid">
+                  <button class="btn btn-coral btn-sm py-2" onclick="navigateTo('apersepsi')">
+                    Mulai Belajar <i class="bi bi-arrow-right-circle-fill ms-1"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ilustrasi SVG Vektor Hero -->
+          <div class="col-lg-5 text-center">
+            <svg viewBox="0 0 420 290" class="w-100" style="max-width: 390px;" fill="none">
+              <rect x="25" y="25" width="370" height="240" rx="26" fill="#1E1B4B" stroke="#F8B2B2" stroke-width="3"/>
+              <!-- Top bar window -->
+              <circle cx="52" cy="48" r="6" fill="#F8B2B2"/>
+              <circle cx="72" cy="48" r="6" fill="#FBBF24"/>
+              <circle cx="92" cy="48" r="6" fill="#14B8A6"/>
+              <rect x="120" y="42" width="140" height="12" rx="6" fill="#403D88"/>
+              <!-- Code lines left -->
+              <rect x="48" y="80" width="110" height="12" rx="6" fill="#8B639B"/>
+              <rect x="48" y="104" width="145" height="12" rx="6" fill="#F8B2B2"/>
+              <rect x="64" y="128" width="120" height="12" rx="6" fill="#14B8A6"/>
+              <rect x="64" y="152" width="95" height="12" rx="6" fill="#93C5FD"/>
+              <rect x="48" y="176" width="135" height="12" rx="6" fill="#F8B2B2"/>
+              <rect x="48" y="206" width="90" height="28" rx="10" fill="#14B8A6"/>
+              <text x="67" y="224" fill="#0F172A" font-family="Plus Jakarta Sans" font-weight="800" font-size="12">RUN ▶</text>
+              <!-- Chart card right -->
+              <rect x="218" y="76" width="152" height="160" rx="18" fill="#2D2B66" stroke="#8B639B" stroke-width="2"/>
+              <rect x="240" y="166" width="20" height="50" rx="6" fill="#F8B2B2"/>
+              <rect x="270" y="136" width="20" height="80" rx="6" fill="#8B639B"/>
+              <rect x="300" y="108" width="20" height="108" rx="6" fill="#14B8A6"/>
+              <rect x="330" y="124" width="20" height="92" rx="6" fill="#FBBF24"/>
+              <path d="M245 148 L280 122 L310 95 L340 108" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="310" cy="95" r="5" fill="#F8B2B2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strip Badge Penghargaan Digital -->
+      <div class="content-card py-3 px-4 mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="fs-4">🏆</span>
+            <div>
+              <h6 class="mb-0">Koleksi Badge Digital Kamu</h6>
+              <small class="text-muted">Selesaikan aktivitas & capai skor tinggi untuk membuka semua lencana!</small>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap gap-2" id="badgeContainer">
+            <!-- Diisi otomatis via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 8 Kartu Menu Utama Interaktif -->
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h3 class="h5 mb-0"><i class="bi bi-grid-fill me-2" style="color: var(--color-purple);"></i>Alur Pembelajaran Mendalam (8 Modul)</h3>
+        <span class="badge rounded-pill px-3 py-2" style="background: var(--color-purple-soft); color: var(--color-purple);">Klik kartu untuk masuk</span>
+      </div>
+
+      <div class="row g-3 g-md-4" id="mainMenuGrid">
+        <!-- Kartu 1: Apersepsi -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="menu-card" id="card-apersepsi" onclick="navigateTo('apersepsi')">
+            <div>
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="menu-icon-box" style="background: var(--color-coral-soft); color: var(--color-indigo);">📌</div>
+                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis status-badge" data-module="apersepsi">Belum</span>
+              </div>
+              <h4 class="h6 fw-bold mb-1">1. Apersepsi</h4>
+              <p class="small text-muted mb-0">Pemantik rasa ingin tahu, video studi kasus & diskusi awal.</p>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center small fw-bold" style="color: var(--color-indigo);">
+              <span>Buka Modul</span>
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu 2: Asesmen Awal -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="menu-card" id="card-diagnostik" onclick="navigateTo('diagnostik')">
+            <div>
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="menu-icon-box" style="background: var(--color-purple-soft); color: var(--color-purple);">🧭</div>
+                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis status-badge" data-module="diagnostik">Belum</span>
+              </div>
+              <h4 class="h6 fw-bold mb-1">2. Asesmen Awal</h4>
+              <p class="small text-muted mb-0">5 soal diagnostik untuk memetakan kesiapan belajarmu.</p>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center small fw-bold" style="color: var(--color-purple);">
+              <span>Mulai Tes</span>
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu 3: Materi Pembelajaran -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="menu-card" id="card-materi" onclick="navigateTo('materi')">
+            <div>
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="menu-icon-box" style="background: var(--color-indigo-soft); color: var(--color-indigo);">📘</div>
+                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis status-badge" data-module="materi">Belum</span>
+              </div>
+              <h4 class="h6 fw-bold mb-1">3. Materi Pembelajaran</h4>
+              <p class="small text-muted mb-0">Konsep visual Python, struktur data & Live Code Editor.</p>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center small fw-bold" style="color: var(--color-indigo);">
+              <span>Pelajari</span>
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu 4: Simulasi / Aktivitas -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="menu-card" id="card-simulasi" onclick="navigateTo('simulasi')">
+            <div>
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="menu-icon-box" style="background: var(--color-tosca-bg); color: var(--color-tosca-dark);">🧩</div>
+                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis status-badge" data-module="simulasi">Belum</span>
+              </div>
+              <h4 class="h6 fw-bold mb-1">4. Simulasi / Aktivitas</h4>
+              <p class="small text-muted mb-0">Susun blok kode produk Python & cocokkan sintaks.</p>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center small fw-bold" style="color: var(--color-tosca-dark);">
+              <span>Praktik Koding</span>
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu 5: Kuis / Games -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="menu-card" id="card-kuis" onclick="navigateTo('kuis')">
+            <div>
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="menu-icon-box" style="background: var(--color-coral-soft); color: #be123c;">🎮</div>
+                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis status-badge" data-module="kuis">Belum</span>
+              </div>
+              <h4 class="h6 fw-bold mb-1">5. Kuis / Games</h4>
+              <p class="small text-muted mb-0">10 soal HOTS analisis kode dengan timer & pembahasan.</p>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center small fw-bold" style="color: #be123c;">
+              <span>Tantangan HOTS</span>
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu 6: Asesmen Akhir -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="menu-card" id="card-asesmen" onclick="navigateTo('asesmen')">
+            <div>
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="menu-icon-box" style="background: var(--color-purple-soft); color: var(--color-purple);">🎯</div>
+                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis status-badge" data-module="asesmen">Belum</span>
+              </div>
+              <h4 class="h6 fw-bold mb-1">6. Asesmen Akhir</h4>
+              <p class="small text-muted mb-0">Evaluasi sumatif 10 soal, predikat & konfeti prestasi.</p>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center small fw-bold" style="color: var(--color-purple);">
+              <span>Ujian Akhir</span>
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu 7: Refleksi -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="menu-card" id="card-refleksi" onclick="navigateTo('refleksi')">
+            <div>
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="menu-icon-box" style="background: var(--color-indigo-soft); color: var(--color-indigo);">🪞</div>
+                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis status-badge" data-module="refleksi">Belum</span>
+              </div>
+              <h4 class="h6 fw-bold mb-1">7. Refleksi</h4>
+              <p class="small text-muted mb-0">Catatan metakognisi diri & unduh laporan hasil belajar.</p>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center small fw-bold" style="color: var(--color-indigo);">
+              <span>Tulis Refleksi</span>
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu 8: Sertifikat Hasil Belajar -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="menu-card" id="card-sertifikat" onclick="navigateTo('sertifikat')">
+            <div>
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="menu-icon-box" style="background: linear-gradient(135deg, var(--color-coral), var(--color-purple)); color: #fff;">🎓</div>
+                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis status-badge" data-module="sertifikat">Siap</span>
+              </div>
+              <h4 class="h6 fw-bold mb-1">8. Sertifikat Hasil Belajar</h4>
+              <p class="small text-muted mb-0">Cetak & unduh PDF sertifikat resmi yang disahkan guru.</p>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center small fw-bold" style="color: var(--color-purple);">
+              <span>Lihat Sertifikat</span>
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HALAMAN 1: APERSEPSI
+         ========================================================= -->
+    <section id="page-apersepsi" class="page-section">
+      <div class="content-card mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <span class="badge rounded-pill px-3 py-2 mb-2" style="background: var(--color-coral); color: var(--color-indigo-dark);">Modul 1 • Membangkitkan Rasa Ingin Tahu</span>
+            <h2 class="h3 mb-0">📌 Apersepsi: Rahasia di Balik Ledakan Data Digital</h2>
+          </div>
+          <button class="btn btn-sm btn-outline-success rounded-pill fw-bold" onclick="markModuleDone('apersepsi', true)">
+            <i class="bi bi-check-circle-fill me-1"></i> Tandai Selesai
+          </button>
+        </div>
+
+        <div class="row g-4 align-items-center mt-1">
+          <!-- Gambar Pemantik SVG Custom -->
+          <div class="col-lg-5">
+            <div class="p-3 rounded-4 text-center" style="background: linear-gradient(145deg, var(--color-indigo-soft), var(--color-coral-soft));">
+              <svg viewBox="0 0 360 250" class="w-100" fill="none">
+                <circle cx="180" cy="125" r="95" fill="#403D88" opacity="0.12"/>
+                <circle cx="180" cy="125" r="65" fill="#8B639B" opacity="0.18"/>
+                <!-- Smartphone / App screen -->
+                <rect x="135" y="35" width="90" height="180" rx="18" fill="#1E1B4B" stroke="#F8B2B2" stroke-width="3"/>
+                <rect x="145" y="55" width="70" height="135" rx="10" fill="#2D2B66"/>
+                <!-- Data floating bubbles -->
+                <rect x="28" y="45" width="88" height="38" rx="12" fill="#FFFFFF" stroke="#8B639B" stroke-width="2"/>
+                <text x="40" y="68" fill="#403D88" font-family="Plus Jakarta Sans" font-weight="800" font-size="11">🎵 10.000 Lagu</text>
+                <rect x="242" y="55" width="94" height="38" rx="12" fill="#FFFFFF" stroke="#14B8A6" stroke-width="2"/>
+                <text x="252" y="78" fill="#0F766E" font-family="Plus Jakarta Sans" font-weight="800" font-size="11">📊 5.400 Voting</text>
+                <rect x="24" y="155" width="96" height="38" rx="12" fill="#FFFFFF" stroke="#F8B2B2" stroke-width="2"/>
+                <text x="36" y="178" fill="#BE123C" font-family="Plus Jakarta Sans" font-weight="800" font-size="11">💬 98.200 Chat</text>
+                <rect x="240" y="150" width="96" height="38" rx="12" fill="#FFFFFF" stroke="#403D88" stroke-width="2"/>
+                <text x="252" y="173" fill="#403D88" font-family="Plus Jakarta Sans" font-weight="800" font-size="11">⚡ 0.02 Detik!</text>
+                <!-- Center question icon -->
+                <circle cx="180" cy="122" r="24" fill="#F8B2B2"/>
+                <text x="172" y="131" fill="#1E1B4B" font-family="Plus Jakarta Sans" font-weight="800" font-size="24">?</text>
+              </svg>
+              <p class="small fw-bold text-muted mb-0 mt-2">Ilustrasi: Ribuan data aktivitas digital tercipta setiap detik!</p>
+            </div>
+          </div>
+
+          <!-- Pemantik Studi Kasus & Video -->
+          <div class="col-lg-7">
+            <div class="p-3 p-md-4 rounded-4 mb-3" style="background: var(--color-purple-soft); border-left: 5px solid var(--color-purple);">
+              <h5 class="fw-bold mb-2"><i class="bi bi-lightbulb-fill text-warning me-1"></i> Skenario Pemantik: Panitia Pentas Seni Sekolah</h5>
+              <p class="mb-0">
+                Bayangkan kamu ditunjuk menjadi ketua panitia <strong>Pentas Seni (Pensi) SMA Khalifah Boarding School</strong>. Kamu menyebarkan kuesioner kepada seluruh siswa dan mendapatkan <strong>10.000 baris data</strong> berisi pilihan genre musik, harga tiket yang sanggup dibayar, serta waktu acara favorit. Deadline rapat bersama kepala sekolah tinggal <strong>15 menit lagi!</strong>
+              </p>
+            </div>
+
+            <!-- Video Pemantik + Pengatur Link YouTube -->
+            <div class="mb-2">
+              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                <label class="fw-bold small"><i class="bi bi-youtube text-danger me-1"></i> Video Pemantik (Dapat diganti sesuai video kelas):</label>
+                <div class="input-group input-group-sm" style="max-width: 340px;">
+                  <input type="text" id="youtubeUrlInput" class="form-control" placeholder="Tempel link YouTube di sini..." />
+                  <button class="btn btn-indigo" type="button" onclick="updateApersepsiVideo()">Ganti Video</button>
+                </div>
+              </div>
+              <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm border">
+                <iframe id="apersepsiVideoFrame" src="https://www.youtube.com/embed/rfscVS0vtbw" title="Video Pemantik Python & Data" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4" />
+
+        <!-- 3 Pertanyaan Pemantik Interaktif -->
+        <h4 class="h5 fw-bold mb-3"><i class="bi bi-chat-dots-fill me-2" style="color: var(--color-indigo);"></i>Pertanyaan Pemantik Diskusi</h4>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-3 rounded-4 h-100 border" style="background: var(--color-coral-soft);">
+              <span class="badge bg-dark mb-2">Pertanyaan 1</span>
+              <p class="fw-bold mb-2">"Apa yang akan terjadi jika kita menghitung dan mengelompokkan 10.000 data survei tersebut secara manual di kertas?"</p>
+              <textarea class="form-control form-control-sm rounded-3" rows="2" id="apersepsiQ1" placeholder="Tulis pendapat singkatmu..." oninput="saveApersepsiNotes()"></textarea>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 rounded-4 h-100 border" style="background: var(--color-purple-soft);">
+              <span class="badge bg-dark mb-2">Pertanyaan 2</span>
+              <p class="fw-bold mb-2">"Apa pendapatmu tentang bagaimana aplikasi seperti Spotify atau TikTok tahu selera musik/video kita dalam hitungan detik?"</p>
+              <textarea class="form-control form-control-sm rounded-3" rows="2" id="apersepsiQ2" placeholder="Tulis pendapat singkatmu..." oninput="saveApersepsiNotes()"></textarea>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 rounded-4 h-100 border" style="background: var(--color-indigo-soft);">
+              <span class="badge bg-dark mb-2">Pertanyaan 3</span>
+              <p class="fw-bold mb-2">"Menurutmu, instruksi logika seperti apa yang dibutuhkan komputer agar bisa menyaring data secara otomatis?"</p>
+              <textarea class="form-control form-control-sm rounded-3" rows="2" id="apersepsiQ3" placeholder="Tulis pendapat singkatmu..." oninput="saveApersepsiNotes()"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigasi Bawah -->
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary rounded-4 px-4 fw-bold" onclick="navigateTo('home')">
+          <i class="bi bi-arrow-left me-1"></i> Menu Utama
+        </button>
+        <button class="btn btn-indigo px-4" onclick="markModuleDone('apersepsi', false); navigateTo('diagnostik')">
+          Lanjut: Asesmen Awal <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HALAMAN 2: ASESMEN AWAL (5 SOAL DIAGNOSTIK)
+         ========================================================= -->
+    <section id="page-diagnostik" class="page-section">
+      <div class="content-card mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <span class="badge rounded-pill px-3 py-2 mb-2" style="background: var(--color-purple); color: #fff;">Modul 2 • Pemetaan Pengetahuan Awal</span>
+            <h2 class="h3 mb-0">🧭 Asesmen Awal (Diagnostik)</h2>
+            <p class="text-muted small mb-0">Jawab 5 pertanyaan singkat berikut untuk melihat kesiapan belajarmu. Langsung ada umpan balik otomatis!</p>
+          </div>
+          <div class="text-end">
+            <span class="badge fs-6 px-3 py-2 rounded-4" style="background: var(--color-indigo); color: #fff;" id="diagScoreBadge">Skor: 0 / 100</span>
+          </div>
+        </div>
+
+        <div id="diagnostikContainer" class="mt-3">
+          <!-- Soal diagnostik dirender via JS -->
+        </div>
+
+        <!-- Ringkasan Hasil Diagnostik -->
+        <div id="diagResultBox" class="alert rounded-4 mt-4 d-none" style="background: var(--color-tosca-bg); border: 2px solid var(--color-tosca);">
+          <h5 class="fw-bold" style="color: var(--color-tosca-dark);"><i class="bi bi-stars me-1"></i> Hasil Pemetaan Awal Kamu</h5>
+          <p id="diagResultText" class="mb-2"></p>
+          <button class="btn btn-sm btn-indigo" onclick="resetDiagnostik()">Ulangi Asesmen Awal</button>
+        </div>
+      </div>
+
+      <!-- Navigasi Bawah -->
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary rounded-4 px-4 fw-bold" onclick="navigateTo('apersepsi')">
+          <i class="bi bi-arrow-left me-1"></i> Sebelumnya
+        </button>
+        <button class="btn btn-indigo px-4" onclick="navigateTo('materi')">
+          Lanjut: Materi Pembelajaran <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HALAMAN 3: MATERI PEMBELAJARAN (DEEP LEARNING & LIVE CODE)
+         ========================================================= -->
+    <section id="page-materi" class="page-section">
+      <div class="content-card mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <span class="badge rounded-pill px-3 py-2 mb-2" style="background: var(--color-indigo); color: #fff;">Modul 3 • Konsep Visual & Produk Koding</span>
+            <h2 class="h3 mb-0">📘 Materi: Dasar-dasar Python untuk Analisis Data</h2>
+          </div>
+          <button class="btn btn-sm btn-outline-success rounded-pill fw-bold" onclick="markModuleDone('materi', true)">
+            <i class="bi bi-check-circle-fill me-1"></i> Tandai Sudah Dipelajari
+          </button>
+        </div>
+
+        <!-- Sub-Navigasi Materi (Tabs) -->
+        <ul class="nav nav-pills materi-pills mb-4" id="materiTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-alur" type="button">1. Alur Analisis Data</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-variabel" type="button">2. Variabel & Tipe Data</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-struktur" type="button">3. List & Dictionary</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-logika" type="button">4. Logika & Statistik</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-sandbox" type="button">5. Lab Koding Python ▶</button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- TAB 1: ALUR ANALISIS DATA -->
+          <div class="tab-pane fade show active" id="tab-alur">
+            <div class="row g-4 align-items-center">
+              <div class="col-lg-6">
+                <h4 class="fw-bold mb-3">Mengapa Python Menjadi Raja Analisis Data?</h4>
+                <p>
+                  <strong>Python</strong> adalah bahasa pemrograman tingkat tinggi yang sintaksnya sangat mirip dengan bahasa manusia (Bahasa Inggris sehari-hari). Dalam analisis data, Python digunakan untuk mengotomatisasi pembersihan, perhitungan, hingga visualisasi data dalam jumlah besar.
+                </p>
+                <ul class="list-group list-group-flush rounded-4 mb-3">
+                  <li class="list-group-item bg-transparent"><i class="bi bi-check2-circle text-success me-2 fw-bold"></i><strong>Ringkas & Mudah Dibaca:</strong> Tidak butuh simbol rumit seperti titik koma (<code>;</code>) atau kurung kurawal blok.</li>
+                  <li class="list-group-item bg-transparent"><i class="bi bi-check2-circle text-success me-2 fw-bold"></i><strong>Ekosistem Kaya:</strong> Mendukung library profesional seperti <em>Pandas, NumPy, Matplotlib</em>.</li>
+                  <li class="list-group-item bg-transparent"><i class="bi bi-check2-circle text-success me-2 fw-bold"></i><strong>Target Produk Kelas XII:</strong> Mampu menyusun skrip Python yang menerima kumpulan data, mengolah statistiknya, dan mencetak laporan keputusan otomatis.</li>
+                </ul>
+              </div>
+              <div class="col-lg-6">
+                <!-- Infografis Diagram Alur SVG -->
+                <div class="p-3 rounded-4 border" style="background: var(--color-indigo-soft);">
+                  <h6 class="text-center fw-bold mb-3">Infografis: Alur Kerja Produk Python Analisis Data</h6>
+                  <svg viewBox="0 0 420 260" class="w-100" fill="none">
+                    <!-- Step 1 -->
+                    <rect x="20" y="20" width="165" height="62" rx="14" fill="#403D88"/>
+                    <text x="36" y="46" fill="#F8B2B2" font-family="Plus Jakarta Sans" font-weight="800" font-size="13">1. INPUT DATA</text>
+                    <text x="36" y="65" fill="#FFFFFF" font-family="Nunito" font-size="11">List / Dictionary / CSV</text>
+
+                    <path d="M185 51 L228 51" stroke="#8B639B" stroke-width="3" marker-end="url(#arrow)"/>
+
+                    <!-- Step 2 -->
+                    <rect x="235" y="20" width="165" height="62" rx="14" fill="#8B639B"/>
+                    <text x="251" y="46" fill="#FFFFFF" font-family="Plus Jakarta Sans" font-weight="800" font-size="13">2. VALIDASI TIPE</text>
+                    <text x="251" y="65" fill="#F3E8FF" font-family="Nunito" font-size="11">int, float, str, bool</text>
+
+                    <path d="M317 82 L317 122" stroke="#8B639B" stroke-width="3"/>
+
+                    <!-- Step 3 -->
+                    <rect x="235" y="128" width="165" height="62" rx="14" fill="#14B8A6"/>
+                    <text x="251" y="154" fill="#0F172A" font-family="Plus Jakarta Sans" font-weight="800" font-size="13">3. OLAH & LOGIKA</text>
+                    <text x="251" y="173" fill="#0F172A" font-family="Nunito" font-weight="700" font-size="11">for loop, if-else, sum()</text>
+
+                    <path d="M235 159 L192 159" stroke="#8B639B" stroke-width="3"/>
+
+                    <!-- Step 4 -->
+                    <rect x="20" y="128" width="165" height="62" rx="14" fill="#F8B2B2"/>
+                    <text x="36" y="154" fill="#1E1B4B" font-family="Plus Jakarta Sans" font-weight="800" font-size="13">4. PRODUK OUTPUT</text>
+                    <text x="36" y="173" fill="#1E1B4B" font-family="Nunito" font-weight="700" font-size="11">Laporan Statistik & Insight</text>
+
+                    <!-- Bottom Banner -->
+                    <rect x="20" y="210" width="380" height="34" rx="10" fill="#1E1B4B"/>
+                    <text x="68" y="232" fill="#F8B2B2" font-family="Fira Code" font-size="12">print("Rata-rata nilai:", round(rata2, 2))</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Callout Tosca 1: Tahukah Kamu? -->
+            <div class="callout-tosca mt-4">
+              <div class="callout-tosca-title">
+                <i class="bi bi-stars fs-5"></i> Tahukah Kamu?
+              </div>
+              <p class="mb-0 small">
+                Nama bahasa pemrograman <strong>Python</strong> ternyata bukan berasal dari nama ular piton! Penciptanya, <strong>Guido van Rossum</strong> (1991), menamainya dari grup komedi favoritnya asal Inggris, <em>"Monty Python's Flying Circus"</em>, karena ia ingin proses koding terasa menyenangkan dan tidak kaku.
+              </p>
+            </div>
+          </div>
+
+          <!-- TAB 2: VARIABEL & TIPE DATA -->
+          <div class="tab-pane fade" id="tab-variabel">
+            <h4 class="fw-bold mb-2">Variabel & Tipe Data Dasar Python</h4>
+            <p class="text-muted">Variabel adalah wadah penyimpanan data di memori komputer. Di Python, kamu tidak perlu mendeklarasikan tipe data secara manual karena Python mengenalinya secara otomatis (<em>Dynamic Typing</em>).</p>
+
+            <div class="table-responsive rounded-4 border mb-3">
+              <table class="table table-hover align-middle mb-0">
+                <thead style="background: var(--color-indigo); color: #fff;">
+                  <tr>
+                    <th>Tipe Data</th>
+                    <th>Kode Python</th>
+                    <th>Kegunaan dalam Analisis Data</th>
+                    <th>Contoh Variabel</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Integer</strong></td>
+                    <td><code>int</code></td>
+                    <td>Bilangan bulat (jumlah siswa, frekuensi, umur)</td>
+                    <td><code>jumlah_siswa = 36</code></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Float</strong></td>
+                    <td><code>float</code></td>
+                    <td>Bilangan desimal (rata-rata nilai, persentase, suhu)</td>
+                    <td><code>rata_rata = 87.65</code></td>
+                  </tr>
+                  <tr>
+                    <td><strong>String</strong></td>
+                    <td><code>str</code></td>
+                    <td>Teks / kategori data (nama kelas, label predikat)</td>
+                    <td><code>kelas = "XII IPA 1"</code></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Boolean</strong></td>
+                    <td><code>bool</code></td>
+                    <td>Nilai kebenaran logika (filter data: lulus/tidak)</td>
+                    <td><code>is_lulus = True</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Callout Tosca 2: Fakta Menarik -->
+            <div class="callout-tosca">
+              <div class="callout-tosca-title">
+                <i class="bi bi-lightning-charge-fill fs-5"></i> Fakta Menarik
+              </div>
+              <p class="mb-0 small">
+                Kesalahan paling sering pemula saat mengolah data kuesioner adalah mencampur tipe data <code>str</code> dan <code>int</code>! Misalnya <code>"85" + "90"</code> di Python akan menghasilkan teks <code>"8590"</code> (penggabungan teks), bukan <code>175</code>. Gunakan fungsi <code>int()</code> atau <code>float()</code> untuk mengonversi data angka terlebih dahulu!
+              </p>
+            </div>
+          </div>
+
+          <!-- TAB 3: STRUKTUR DATA LIST & DICTIONARY -->
+          <div class="tab-pane fade" id="tab-struktur">
+            <h4 class="fw-bold mb-2">Menyimpan Dataset dengan <code>List</code> dan <code>Dictionary</code></h4>
+            <p class="text-muted">Analisis data selalu berhadapan dengan banyak data sekaligus. Python menyediakan dua struktur utama yang wajib dikuasai:</p>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <div class="p-3 rounded-4 border h-100" style="background: var(--color-coral-soft);">
+                  <h5 class="fw-bold"><i class="bi bi-list-ol me-2"></i>1. List <code>[ ... ]</code></h5>
+                  <p class="small">Menyimpan sekumpulan data secara berurutan berdasarkan indeks (dimulai dari indeks <strong>0</strong>).</p>
+                  <pre class="bg-dark text-info p-3 rounded-3 small mb-0">nilai_ujian = [85, 92, 78, 95, 88]
+print(nilai_ujian[0])   # Output: 85
+print(len(nilai_ujian)) # Output: 5</pre>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 rounded-4 border h-100" style="background: var(--color-purple-soft);">
+                  <h5 class="fw-bold"><i class="bi bi-braces me-2"></i>2. Dictionary <code>{ key: value }</code></h5>
+                  <p class="small">Menyimpan data berpasangan (kunci dan nilai), sangat mirip dengan kolom pada tabel Excel/JSON.</p>
+                  <pre class="bg-dark text-warning p-3 rounded-3 small mb-0">siswa = {"nama": "Aisyah", "nilai": 94}
+print(siswa["nama"])  # Output: Aisyah
+print(siswa["nilai"]) # Output: 94</pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Callout Tosca 3: Info Penting -->
+            <div class="callout-tosca">
+              <div class="callout-tosca-title">
+                <i class="bi bi-exclamation-diamond-fill fs-5"></i> Info Penting (Aturan Indeks Python)
+              </div>
+              <p class="mb-0 small">
+                Ingat selalu bahwa pengurutan (<em>indexing</em>) di Python bersifat <strong>Zero-Based (dimulai dari 0)</strong>! Jika sebuah <code>List</code> berisi 5 data, maka indeks validnya adalah <code>0, 1, 2, 3, 4</code>. Mengakses indeks ke-5 akan memicu pesan error <code>IndexError: list index out of range</code>.
+              </p>
+            </div>
+          </div>
+
+          <!-- TAB 4: LOGIKA, PERULANGAN & FUNGSI STATISTIK -->
+          <div class="tab-pane fade" id="tab-logika">
+            <h4 class="fw-bold mb-2">Mengolah Dataset Menjadi Produk Keputusan</h4>
+            <p class="text-muted">Gabungkan fungsi bawaan Python (<code>sum()</code>, <code>len()</code>, <code>max()</code>, <code>min()</code>) dengan percabangan <code>if-elif-else</code> dan perulangan <code>for</code>:</p>
+
+            <div class="code-window mb-3">
+              <div class="code-window-header">
+                <div class="d-flex gap-1">
+                  <span class="dot bg-danger"></span>
+                  <span class="dot bg-warning"></span>
+                  <span class="dot bg-success"></span>
+                </div>
+                <span class="small text-light font-code">produk_analisis_nilai.py</span>
+                <span class="badge bg-info text-dark">Contoh Produk</span>
+              </div>
+              <pre class="p-3 mb-0 text-light font-code small" style="overflow-x: auto;"># Dataset nilai kuis analisis data kelas XII
+data_nilai = [88, 92, 75, 96, 84, 90]
+
+total = sum(data_nilai)
+jumlah_data = len(data_nilai)
+rata_rata = total / jumlah_data
+tertinggi = max(data_nilai)
+
+print("Jumlah Siswa :", jumlah_data)
+print("Rata-rata    :", round(rata_rata, 2))
+print("Nilai Puncak :", tertinggi)
+
+# Logika pengambilan keputusan otomatis
+if rata_rata >= 85:
+    print("Status Kelas : SANGAT KOMPETEN")
+else:
+    print("Status Kelas : PERLU PENGAYAAN")</pre>
+            </div>
+          </div>
+
+          <!-- TAB 5: MINI LIVE CODE SIMULATOR -->
+          <div class="tab-pane fade" id="tab-sandbox">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+              <div>
+                <h4 class="fw-bold mb-0">💻 Lab Koding Mini Python (Live Simulator)</h4>
+                <p class="text-muted small mb-0">Ubah angka di dalam <code>data_penjualan</code> atau teks <code>print()</code>, lalu tekan tombol <strong>Jalankan Kode</strong>!</p>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="resetSandboxCode()">Reset Kode</button>
+                <button class="btn btn-sm btn-coral" onclick="runPythonSandbox()">
+                  <i class="bi bi-play-fill"></i> Jalankan Kode
+                </button>
+              </div>
+            </div>
+
+            <div class="code-window">
+              <div class="code-window-header">
+                <div class="d-flex gap-1">
+                  <span class="dot bg-danger"></span>
+                  <span class="dot bg-warning"></span>
+                  <span class="dot bg-success"></span>
+                </div>
+                <span class="small text-white-50 font-code">main.py — Interactive Python Runner</span>
+                <span class="badge bg-success">Ready</span>
+              </div>
+              <textarea id="pythonSandboxInput" class="code-editor-area" rows="10"># Produk Analisis Data Penjualan Kantin Sehat (dalam Ribu Rupiah)
+data_penjualan = [120, 150, 95, 180, 210]
+
+total = sum(data_penjualan)
+rata_rata = total / len(data_penjualan)
+tertinggi = max(data_penjualan)
+
+print("=== LAPORAN ANALISIS KANTIN ===")
+print("Total Omzet   : Rp", total, "ribu")
+print("Rata-rata/Hari: Rp", rata_rata, "ribu")
+print("Omzet Tertinggi: Rp", tertinggi, "ribu")</textarea>
+              <div class="code-output-box" id="pythonSandboxOutput">Klik tombol "Jalankan Kode" di kanan atas untuk melihat hasil eksekusi produk Python...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigasi Bawah -->
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary rounded-4 px-4 fw-bold" onclick="navigateTo('diagnostik')">
+          <i class="bi bi-arrow-left me-1"></i> Sebelumnya
+        </button>
+        <button class="btn btn-indigo px-4" onclick="markModuleDone('materi', false); navigateTo('simulasi')">
+          Lanjut: Simulasi / Aktivitas <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HALAMAN 4: SIMULASI / AKTIVITAS INTERAKTIF (GROWTH MINDSET)
+         ========================================================= -->
+    <section id="page-simulasi" class="page-section">
+      <div class="content-card mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <span class="badge rounded-pill px-3 py-2 mb-2" style="background: var(--color-tosca); color: #fff;">Modul 4 • Hands-On & Growth Mindset</span>
+            <h2 class="h3 mb-0">🧩 Simulasi & Aktivitas Koding Interaktif</h2>
+            <p class="text-muted small mb-0">Bangun produk program Python analisis data melalui dua tantangan interaktif berikut!</p>
+          </div>
+          <span class="badge fs-6 px-3 py-2 rounded-4" style="background: var(--color-purple); color: #fff;" id="simulasiStatusBadge">Aktivitas: 0/2 Selesai</span>
+        </div>
+
+        <!-- AKTIVITAS 1: DRAG & DROP / SUSUN BLOK KODE PYTHON -->
+        <div class="p-3 p-md-4 rounded-4 border mb-4" style="background: var(--bg-body);">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <h4 class="h5 fw-bold mb-0">Aktivitas 1: Susun Blok Kode Produk Analisis Suhu Ruang Server</h4>
+            <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="resetCodeBuilder()">Acak Ulang Blok</button>
+          </div>
+          <p class="small text-muted mb-3">
+            Seret (<em>Drag & Drop</em>) atau <strong>klik</strong> potongan kode dari kotak kiri ke area penyusunan di kanan secara berurutan dari atas ke bawah agar menghasilkan program penghitung rata-rata suhu yang valid!
+          </p>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="p-3 rounded-4 border bg-body h-100">
+                <div class="small fw-bold text-muted mb-2"><i class="bi bi-collection me-1"></i> Potongan Blok Tersedia (Klik / Seret):</div>
+                <div id="codeSourcePool"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="drop-zone-box" id="codeDropZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                <div class="small fw-bold mb-2" style="color: var(--color-indigo);"><i class="bi bi-terminal-fill me-1"></i> Susunan Program Python Kamu:</div>
+                <div id="codeTargetList">
+                  <div class="text-center text-muted small py-5" id="dropPlaceholder">Letakkan atau klik blok kode secara berurutan di sini...</div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-indigo w-100" onclick="verifyCodeBuilder()">
+                  <i class="bi bi-play-circle-fill me-1"></i> Jalankan & Periksa Susunan
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Umpan Balik Growth Mindset Aktivitas 1 -->
+          <div id="builderFeedback" class="mt-3 d-none"></div>
+        </div>
+
+        <!-- AKTIVITAS 2: MENCOCOKKAN PASANGAN (MATCHING PAIRS) -->
+        <div class="p-3 p-md-4 rounded-4 border" style="background: var(--bg-body);">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <h4 class="h5 fw-bold mb-0">Aktivitas 2: Cocokkan Sintaks Python & Hasil Output-nya</h4>
+            <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="initMatchingGame()">Ulangi Pencocokan</button>
+          </div>
+          <p class="small text-muted mb-3">Klik satu kartu ekspresi Python di kolom kiri, lalu klik pasangan hasil output yang tepat di kolom kanan.</p>
+
+          <div class="row g-3" id="matchingGameGrid">
+            <div class="col-md-6" id="matchLeftCol"></div>
+            <div class="col-md-6" id="matchRightCol"></div>
+          </div>
+          <div id="matchingFeedback" class="mt-3 d-none"></div>
+        </div>
+      </div>
+
+      <!-- Navigasi Bawah -->
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary rounded-4 px-4 fw-bold" onclick="navigateTo('materi')">
+          <i class="bi bi-arrow-left me-1"></i> Sebelumnya
+        </button>
+        <button class="btn btn-indigo px-4" onclick="navigateTo('kuis')">
+          Lanjut: Kuis HOTS <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HALAMAN 5: KUIS INTERAKTIF (10 SOAL HOTS + TIMER + PEMBAHASAN)
+         ========================================================= -->
+    <section id="page-kuis" class="page-section">
+      <div class="content-card mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <span class="badge rounded-pill px-3 py-2 mb-2" style="background: var(--color-coral); color: var(--color-indigo-dark);">Modul 5 • Tantangan Berpikir Tingkat Tinggi</span>
+            <h2 class="h3 mb-0">🎮 Kuis Interaktif HOTS (10 Soal)</h2>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge fs-6 px-3 py-2 rounded-4 bg-dark text-warning font-code">
+              <i class="bi bi-stopwatch-fill me-1"></i> <span id="quizTimerDisplay">00:00</span>
+            </span>
+            <span class="badge fs-6 px-3 py-2 rounded-4" style="background: var(--color-indigo); color: #fff;" id="quizScoreHeader">Skor: 0</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar Soal Kuis -->
+        <div class="mb-4">
+          <div class="d-flex justify-content-between small fw-bold mb-1">
+            <span id="quizQuestionCounter">Soal 1 dari 10</span>
+            <span id="quizProgressPercent">10%</span>
+          </div>
+          <div class="progress" style="height: 10px; border-radius: 99px;">
+            <div class="progress-bar" id="quizProgressBar" style="width: 10%; background: linear-gradient(90deg, var(--color-purple), var(--color-indigo));"></div>
+          </div>
+        </div>
+
+        <!-- Area Soal Kuis -->
+        <div id="quizPlayArea"></div>
+
+        <!-- Area Hasil & Pembahasan Lengkap -->
+        <div id="quizSummaryArea" class="d-none"></div>
+      </div>
+
+      <!-- Navigasi Bawah -->
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary rounded-4 px-4 fw-bold" onclick="navigateTo('simulasi')">
+          <i class="bi bi-arrow-left me-1"></i> Sebelumnya
+        </button>
+        <button class="btn btn-indigo px-4" onclick="navigateTo('asesmen')">
+          Lanjut: Asesmen Akhir <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HALAMAN 6: ASESMEN AKHIR (10 SOAL SUMATIF + PREDIKAT + KONFETI)
+         ========================================================= -->
+    <section id="page-asesmen" class="page-section">
+      <div class="content-card mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <span class="badge rounded-pill px-3 py-2 mb-2" style="background: var(--color-purple); color: #fff;">Modul 6 • Evaluasi Sumatif Akhir</span>
+            <h2 class="h3 mb-0">🎯 Asesmen Akhir: Analisis Data Python</h2>
+          </div>
+          <span class="badge fs-6 px-3 py-2 rounded-4 bg-dark text-info font-code">
+            <i class="bi bi-clock-history me-1"></i> <span id="examTimerDisplay">00:00</span>
+          </span>
+        </div>
+
+        <!-- Form Identitas Peserta Ujian -->
+        <div class="p-3 rounded-4 mb-4 border" style="background: var(--color-indigo-soft);">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold mb-1">Nama Lengkap Peserta Didik (Untuk Sertifikat):</label>
+              <input type="text" id="examStudentName" class="form-control rounded-3" placeholder="Masukkan nama lengkap..." oninput="syncStudentProfile(this.value, null)" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold mb-1">Kelas:</label>
+              <input type="text" id="examStudentClass" class="form-control rounded-3" placeholder="Contoh: XII IPA 1" oninput="syncStudentProfile(null, this.value)" />
+            </div>
+            <div class="col-md-2 d-grid">
+              <button class="btn btn-outline-danger rounded-3 fw-bold" onclick="resetExam()">Ulangi Tes</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daftar 10 Soal Asesmen Akhir -->
+        <div id="examQuestionsContainer"></div>
+
+        <!-- Tombol Submit Asesmen Akhir -->
+        <div class="d-grid d-md-flex justify-content-md-end mt-4" id="examSubmitWrapper">
+          <button class="btn btn-indigo btn-lg px-5" onclick="submitFinalExam()">
+            <i class="bi bi-send-check-fill me-2"></i> Kumpulkan & Lihat Nilai Akhir
+          </button>
+        </div>
+
+        <!-- Hasil Nilai Akhir & Predikat -->
+        <div id="examResultCard" class="mt-4 d-none"></div>
+      </div>
+
+      <!-- Navigasi Bawah -->
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary rounded-4 px-4 fw-bold" onclick="navigateTo('kuis')">
+          <i class="bi bi-arrow-left me-1"></i> Sebelumnya
+        </button>
+        <button class="btn btn-indigo px-4" onclick="navigateTo('refleksi')">
+          Lanjut: Refleksi Belajar <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HALAMAN 7: REFLEKSI & UNDUH HASIL BELAJAR
+         ========================================================= -->
+    <section id="page-refleksi" class="page-section">
+      <div class="content-card mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <span class="badge rounded-pill px-3 py-2 mb-2" style="background: var(--color-indigo); color: #fff;">Modul 7 • Metakognisi Deep Learning</span>
+            <h2 class="h3 mb-0">🪞 Refleksi Pembelajaran Mandiri</h2>
+            <p class="text-muted small mb-0">Tuliskan pengalaman dan pemahamanmu setelah mempelajari dasar-dasar Python untuk analisis data.</p>
+          </div>
+          <button class="btn btn-coral" onclick="downloadLearningReport()">
+            <i class="bi bi-file-earmark-arrow-down-fill me-1"></i> Download Hasil Belajar
+          </button>
+        </div>
+
+        <div class="row g-3 mt-1">
+          <div class="col-md-6">
+            <div class="p-3 rounded-4 border h-100" style="background: var(--color-coral-soft);">
+              <label class="form-label fw-bold"><i class="bi bi-check2-square me-1 text-success"></i> 1. Saya sudah memahami...</label>
+              <textarea id="refleksi1" class="form-control rounded-3" rows="3" placeholder="Tuliskan konsep atau kode Python yang sudah kamu kuasai..." oninput="saveReflection()"></textarea>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded-4 border h-100" style="background: var(--color-purple-soft);">
+              <label class="form-label fw-bold"><i class="bi bi-star-fill me-1 text-warning"></i> 2. Hal yang paling menarik adalah...</label>
+              <textarea id="refleksi2" class="form-control rounded-3" rows="3" placeholder="Bagian mana dari simulasi, kuis, atau koding yang paling seru?" oninput="saveReflection()"></textarea>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded-4 border h-100" style="background: var(--color-indigo-soft);">
+              <label class="form-label fw-bold"><i class="bi bi-question-circle-fill me-1 text-primary"></i> 3. Hal yang masih membingungkan adalah...</label>
+              <textarea id="refleksi3" class="form-control rounded-3" rows="3" placeholder="Tuliskan materi yang masih ingin kamu diskusikan dengan guru/teman..." oninput="saveReflection()"></textarea>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded-4 border h-100" style="background: var(--color-tosca-bg);">
+              <label class="form-label fw-bold"><i class="bi bi-rocket-fill me-1 text-danger"></i> 4. Rencana saya setelah belajar materi ini adalah...</label>
+              <textarea id="refleksi4" class="form-control rounded-3" rows="3" placeholder="Contoh: Membuat proyek analisis data pengeluaran harian dengan Python..." oninput="saveReflection()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <span class="small text-success fw-bold" id="refleksiSavedNote"><i class="bi bi-cloud-check-fill me-1"></i> Jawaban refleksi otomatis tersimpan di perangkat ini.</span>
+          <button class="btn btn-indigo" onclick="saveReflection(true)">
+            <i class="bi bi-save2-fill me-1"></i> Simpan Refleksi
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigasi Bawah -->
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary rounded-4 px-4 fw-bold" onclick="navigateTo('asesmen')">
+          <i class="bi bi-arrow-left me-1"></i> Sebelumnya
+        </button>
+        <button class="btn btn-indigo px-4" onclick="navigateTo('sertifikat')">
+          Lanjut: Sertifikat Hasil Belajar <i class="bi bi-award-fill ms-1"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HALAMAN 8: SERTIFIKAT HASIL BELAJAR OTOMATIS
+         ========================================================= -->
+    <section id="page-sertifikat" class="page-section">
+      <div class="content-card mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+          <div>
+            <span class="badge rounded-pill px-3 py-2 mb-2" style="background: var(--color-coral); color: var(--color-indigo-dark);">Modul 8 • Apresiasi Capaian Belajar</span>
+            <h2 class="h3 mb-0">🎓 Sertifikat Hasil Belajar Otomatis</h2>
+            <p class="text-muted small mb-0">Pastikan Nama dan Kelas sudah sesuai sebelum mengunduh PDF atau mencetak sertifikat.</p>
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-coral" onclick="downloadCertificatePDF()">
+              📥 Unduh Sertifikat PDF
+            </button>
+            <button class="btn btn-indigo" onclick="printCertificate()">
+              🖨 Cetak Sertifikat
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Edit Nama/Kelas di Halaman Sertifikat -->
+        <div class="row g-2 mb-4 p-3 rounded-4 border" style="background: var(--bg-body);">
+          <div class="col-md-5">
+            <label class="small fw-bold">Edit Nama di Sertifikat:</label>
+            <input type="text" id="certNameInput" class="form-control form-control-sm rounded-3" placeholder="Nama Lengkap Siswa" oninput="syncStudentProfile(this.value, null)" />
+          </div>
+          <div class="col-md-4">
+            <label class="small fw-bold">Edit Kelas:</label>
+            <input type="text" id="certClassInput" class="form-control form-control-sm rounded-3" placeholder="XII IPA / IPS" oninput="syncStudentProfile(null, this.value)" />
+          </div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-sm btn-purple w-100 py-2" onclick="updateCertificateView()">Perbarui Tampilan</button>
+          </div>
+        </div>
+
+        <!-- AREA SERTIFIKAT (AKAN DICETAK / DIEKSPOR PDF) -->
+        <div class="certificate-wrapper" id="certificatePrintArea">
+          <div class="certificate-inner text-center">
+            <!-- Dekorasi Sudut Artistik -->
+            <div class="cert-corner-decor" style="background: #F8B2B2; top: -65px; left: -65px;"></div>
+            <div class="cert-corner-decor" style="background: #8B639B; bottom: -65px; right: -65px;"></div>
+
+            <!-- Kop Lembaga -->
+            <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+              <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+                <rect x="2" y="2" width="32" height="32" rx="9" fill="#403D88"/>
+                <path d="M10 24V18M16 24V12M22 24V15M28 24V9" stroke="#F8B2B2" stroke-width="3.2" stroke-linecap="round"/>
+              </svg>
+              <span class="fw-extrabold text-uppercase" style="letter-spacing: 0.12em; color: #403D88; font-size: 1.05rem;">
+                SMA KHALIFAH BOARDING SCHOOL
+              </span>
+            </div>
+
+            <div class="mx-auto mb-3" style="width: 120px; height: 4px; background: linear-gradient(90deg, #F8B2B2, #8B639B, #403D88); border-radius: 99px;"></div>
+
+            <h2 class="cert-title display-6 mb-1">SERTIFIKAT HASIL BELAJAR</h2>
+            <p class="text-muted small mb-3">Nomor: MPI-PY/XII/<span id="certYearText">2026</span>/KBS</p>
+
+            <p class="mb-1" style="color: #5b5878;">Diberikan dengan bangga kepada:</p>
+            <div class="my-2">
+              <div class="cert-student-name" id="certDisplayStudentName">PESERTA DIDIK SMA</div>
+            </div>
+            <p class="fw-bold mb-3" style="color: #403D88;">Kelas: <span id="certDisplayClass">XII</span></p>
+
+            <p class="mx-auto mb-3" style="max-width: 680px; color: #333154; line-height: 1.6;">
+              Telah berhasil menyelesaikan pembelajaran interaktif berbasis <em>Deep Learning</em> pada Mata Pelajaran Informatika dengan materi:
+              <br />
+              <strong style="color: #403D88; font-size: 1.08rem;">Analisis Data — Dasar-dasar Pemrograman Python</strong>
+              <br />
+              <span class="small text-muted">(Capaian Produk: Pemrograman Python Dasar untuk Pengolahan & Analisis Data)</span>
+            </p>
+
+            <!-- Kotak Nilai & Predikat -->
+            <div class="d-inline-flex flex-wrap justify-content-center align-items-center gap-4 px-4 py-2 rounded-4 mb-4" style="background: #f5eff8; border: 1.5px solid #8B639B;">
+              <div>
+                <div class="small text-muted">Nilai Akhir</div>
+                <div class="h4 fw-extrabold mb-0" style="color: #403D88;" id="certDisplayScore">-</div>
+              </div>
+              <div style="width: 1px; height: 32px; background: #cbd5e1;"></div>
+              <div>
+                <div class="small text-muted">Predikat Capaian</div>
+                <div class="h5 fw-extrabold mb-0" style="color: #8B639B;" id="certDisplayPredicate">Belum Dinilai</div>
+              </div>
+            </div>
+
+            <!-- Tanggal & Pengesahan Paraf Guru -->
+            <div class="row align-items-end mt-2 pt-2">
+              <div class="col-6 text-start ps-md-4">
+                <p class="small text-muted mb-1">Tanggal Belajar:</p>
+                <p class="fw-bold mb-0" style="color: #403D88;" id="certDisplayDate">-</p>
+                <span class="badge mt-2" style="background: #F8B2B2; color: #1e1b4b;">Verified Digital MPI</span>
+              </div>
+              <div class="col-6 text-end pe-md-4">
+                <p class="small text-muted mb-1">Mengetahui & Mengesahkan,</p>
+                <p class="small fw-bold mb-1" style="color: #403D88;">Guru Informatika</p>
+                <!-- Paraf Digital SVG Artistik -->
+                <div class="d-inline-block my-1">
+                  <svg width="140" height="52" viewBox="0 0 160 60" fill="none">
+                    <path d="M18 44 C30 14, 42 12, 46 38 C50 20, 62 16, 68 36 C76 24, 88 26, 98 34 C112 22, 128 18, 142 30" stroke="#403D88" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M24 48 C62 42, 104 40, 146 45" stroke="#8B639B" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <p class="fw-bold mb-0 text-decoration-underline" style="color: #1e1b4b;">Muhammad Irpan, S.Kom</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigasi Bawah -->
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary rounded-4 px-4 fw-bold" onclick="navigateTo('refleksi')">
+          <i class="bi bi-arrow-left me-1"></i> Sebelumnya
+        </button>
+        <button class="btn btn-coral px-4" onclick="navigateTo('home')">
+          <i class="bi bi-house-door-fill me-1"></i> Kembali ke Menu Utama
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODAL KONFIRMASI RESET PROGRESS ================= -->
+  <div class="modal fade" id="resetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold"><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>Ulangi Materi / Reset Progress?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0">Semua progres modul, skor kuis, nilai asesmen akhir, dan catatan refleksi yang tersimpan di perangkat ini akan dihapus agar kamu bisa mengulang dari awal. Lanjutkan?</p>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-light rounded-3 fw-bold" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-danger rounded-3 fw-bold" onclick="confirmResetAllProgress()" data-bs-dismiss="modal">Ya, Reset Semua</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFIKASI RINGAN ================= -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <div id="liveToast" class="toast align-items-center text-bg-dark border-0 rounded-4" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body fw-semibold" id="toastMessage">Notifikasi</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER PROFESIONAL ================= -->
+  <footer class="mpi-footer py-3">
+    <div class="container">
+      <div class="row align-items-center g-2 small">
+        <div class="col-md-6 text-center text-md-start">
+          <strong>SMA KHALIFAH BOARDING SCHOOL</strong> • Media Pembelajaran Interaktif (MPI) Kelas XII
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          Guru Pengampu: <strong>Muhammad Irpan, S.Kom</strong> | Informatika — Analisis Data
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ================= VANILLA JAVASCRIPT LOGIC ================= -->
+  <script>
+    /*************************************************************************
+     * 1. STATE MANAJEMEN & PENYIMPANAN LOKAL (localStorage)
+     *************************************************************************/
+    const STORAGE_KEY = 'mpi_python_analisis_data_v1';
+
+    const defaultState = {
+      theme: 'light',
+      studentName: '',
+      studentClass: '',
+      completedModules: {
+        apersepsi: false,
+        diagnostik: false,
+        materi: false,
+        simulasi: false,
+        kuis: false,
+        asesmen: false,
+        refleksi: false,
+        sertifikat: false
+      },
+      apersepsi: {
+        videoUrl: 'https://www.youtube.com/embed/rfscVS0vtbw',
+        q1: '',
+        q2: '',
+        q3: ''
+      },
+      diagnostik: {
+        answers: {},
+        score: 0
+      },
+      simulasi: {
+        builderDone: false,
+        matchingDone: false
+      },
+      kuis: {
+        currentIdx: 0,
+        answers: {},
+        finished: false,
+        score: 0,
+        elapsedSeconds: 0
+      },
+      asesmen: {
+        answers: {},
+        submitted: false,
+        score: null,
+        predicate: 'Belum Dinilai',
+        elapsedSeconds: 0
+      },
+      refleksi: {
+        r1: '',
+        r2: '',
+        r3: '',
+        r4: ''
+      }
+    };
+
+    let appState = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return JSON.parse(JSON.stringify(defaultState));
+        const parsed = JSON.parse(raw);
+        return {
+          ...defaultState,
+          ...parsed,
+          completedModules: { ...defaultState.completedModules, ...(parsed.completedModules || {}) },
+          apersepsi: { ...defaultState.apersepsi, ...(parsed.apersepsi || {}) },
+          diagnostik: { ...defaultState.diagnostik, ...(parsed.diagnostik || {}) },
+          simulasi: { ...defaultState.simulasi, ...(parsed.simulasi || {}) },
+          kuis: { ...defaultState.kuis, ...(parsed.kuis || {}) },
+          asesmen: { ...defaultState.asesmen, ...(parsed.asesmen || {}) },
+          refleksi: { ...defaultState.refleksi, ...(parsed.refleksi || {}) }
+        };
+      } catch (e) {
+        return JSON.parse(JSON.stringify(defaultState));
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.warn('Penyimpanan lokal tidak tersedia:', e);
+      }
+      updateGlobalProgressUI();
+      renderBadges();
+    }
+
+    function showToast(msg) {
+      const toastEl = document.getElementById('liveToast');
+      document.getElementById('toastMessage').textContent = msg;
+      const toast = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 2600 });
+      toast.show();
+    }
+
+    /*************************************************************************
+     * 2. NAVIGASI HALAMAN, TEMA (LIGHT/DARK), & MUSIK AMBIENT WEB AUDIO API
+     *************************************************************************/
+    let currentPage = 'home';
+    let quizTimerInterval = null;
+    let examTimerInterval = null;
+
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById('page-' + pageId);
+      if (target) {
+        target.classList.add('active');
+        currentPage = pageId;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Kelola timer kuis & asesmen akhir sesuai halaman aktif
+      if (pageId === 'kuis' && !appState.kuis.finished) {
+        startQuizTimer();
+      } else {
+        stopQuizTimer();
+      }
+
+      if (pageId === 'asesmen' && !appState.asesmen.submitted) {
+        startExamTimer();
+      } else {
+        stopExamTimer();
+      }
+
+      if (pageId === 'sertifikat') {
+        markModuleDone('sertifikat', false);
+        updateCertificateView();
+      }
+    }
+
+    function toggleTheme() {
+      appState.theme = appState.theme === 'light' ? 'dark' : 'light';
+      applyTheme();
+      saveState();
+    }
+
+    function applyTheme() {
+      document.documentElement.setAttribute('data-bs-theme', appState.theme);
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
+      if (appState.theme === 'dark') {
+        icon.className = 'bi bi-sun-fill text-warning';
+        label.textContent = 'Terang';
+      } else {
+        icon.className = 'bi bi-moon-stars-fill';
+        label.textContent = 'Gelap';
+      }
+    }
+
+    // Synthesizer Musik Ambient Lembut (Tanpa file audio eksternal)
+    let audioCtx = null;
+    let musicInterval = null;
+    let isMusicPlaying = false;
+
+    function toggleBackgroundMusic() {
+      const btn = document.getElementById('btnMusicToggle');
+      const label = document.getElementById('musicLabel');
+      const icon = document.getElementById('musicIcon');
+
+      if (!isMusicPlaying) {
+        try {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const chords = [
+            [261.63, 329.63, 392.00], // C major
+            [220.00, 261.63, 329.63], // A minor
+            [174.61, 220.00, 261.63], // F major
+            [196.00, 246.94, 293.66]  // G major
+          ];
+          let step = 0;
+
+          const playPad = () => {
+            if (!audioCtx || !isMusicPlaying) return;
+            const now = audioCtx.currentTime;
+            const chord = chords[step % chords.length];
+            chord.forEach(freq => {
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(freq, now);
+              gain.gain.setValueAtTime(0.001, now);
+              gain.gain.exponentialRampToValueAtTime(0.025, now + 0.8);
+              gain.gain.exponentialRampToValueAtTime(0.0008, now + 3.4);
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.start(now);
+              osc.stop(now + 3.5);
+            });
+            step++;
+          };
+
+          isMusicPlaying = true;
+          playPad();
+          musicInterval = setInterval(playPad, 3500);
+          btn.classList.add('active');
+          icon.className = 'bi bi-volume-up-fill';
+          label.textContent = 'Musik: ON';
+          showToast('Musik latar fokus belajar diaktifkan 🎵');
+        } catch (e) {
+          showToast('Browser memblokir audio otomatis.');
+        }
+      } else {
+        isMusicPlaying = false;
+        clearInterval(musicInterval);
+        if (audioCtx) audioCtx.close();
+        btn.classList.remove('active');
+        icon.className = 'bi bi-music-note-beamed';
+        label.textContent = 'Musik: OFF';
+        showToast('Musik latar dimatikan');
+      }
+    }
+
+    function syncStudentProfile(nameVal, classVal) {
+      if (nameVal !== null) appState.studentName = nameVal;
+      if (classVal !== null) appState.studentClass = classVal;
+
+      const nameInputs = ['homeStudentName', 'examStudentName', 'certNameInput'];
+      const classInputs = ['homeStudentClass', 'examStudentClass', 'certClassInput'];
+
+      nameInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.value !== appState.studentName) el.value = appState.studentName;
+      });
+      classInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.value !== appState.studentClass) el.value = appState.studentClass;
+      });
+
+      updateCertificateView();
+      saveState();
+    }
+
+    function markModuleDone(moduleKey, notify = true) {
+      appState.completedModules[moduleKey] = true;
+      saveState();
+      if (notify) showToast('Mantap! Progres modul berhasil ditandai selesai ✅');
+    }
+
+    function updateGlobalProgressUI() {
+      const keys = Object.keys(appState.completedModules);
+      const doneCount = keys.filter(k => appState.completedModules[k]).length;
+      const percent = Math.round((doneCount / keys.length) * 100);
+
+      document.getElementById('progressPercentText').textContent = `${percent}% Selesai (${doneCount}/${keys.length} Modul)`;
+      const bar = document.getElementById('globalProgressBar');
+      bar.style.width = `${percent}%`;
+      bar.setAttribute('aria-valuenow', percent);
+
+      // Update status badge di setiap kartu menu
+      keys.forEach(k => {
+        const badge = document.querySelector(`.status-badge[data-module="${k}"]`);
+        const card = document.getElementById(`card-${k}`);
+        if (badge && card) {
+          if (appState.completedModules[k]) {
+            badge.className = 'badge rounded-pill text-bg-success status-badge';
+            badge.textContent = '✓ Selesai';
+            card.classList.add('completed');
+          } else {
+            badge.className = 'badge rounded-pill bg-secondary-subtle text-secondary-emphasis status-badge';
+            badge.textContent = k === 'sertifikat' ? 'Siap' : 'Belum';
+            card.classList.remove('completed');
+          }
+        }
+      });
+    }
+
+    function renderBadges() {
+      const badges = [
+        {
+          id: 'rookie',
+          title: 'Python Explorer',
+          desc: 'Menyelesaikan Apersepsi & Materi',
+          icon: '🐍',
+          unlocked: appState.completedModules.apersepsi && appState.completedModules.materi
+        },
+        {
+          id: 'builder',
+          title: 'Code Builder',
+          desc: 'Menuntaskan Simulasi Koding',
+          icon: '🧩',
+          unlocked: appState.completedModules.simulasi
+        },
+        {
+          id: 'hots',
+          title: 'HOTS Analyst',
+          desc: 'Skor Kuis HOTS ≥ 80',
+          icon: '⚡',
+          unlocked: appState.kuis.finished && appState.kuis.score >= 80
+        },
+        {
+          id: 'master',
+          title: 'Data Master XII',
+          desc: 'Nilai Asesmen Akhir ≥ 90',
+          icon: '👑',
+          unlocked: appState.asesmen.submitted && appState.asesmen.score >= 90
+        }
+      ];
+
+      const container = document.getElementById('badgeContainer');
+      container.innerHTML = badges.map(b => `
+        <div class="px-3 py-2 rounded-4 border d-flex align-items-center gap-2 ${b.unlocked ? '' : 'opacity-50'}"
+             style="background: ${b.unlocked ? 'var(--color-tosca-bg)' : 'var(--bg-body)'}; border-color: ${b.unlocked ? 'var(--color-tosca)' : 'var(--border-soft)'} !important;"
+             title="${b.desc}">
+          <span class="fs-5">${b.unlocked ? b.icon : '🔒'}</span>
+          <div>
+            <div class="small fw-bold lh-1">${b.title}</div>
+            <span style="font-size: 0.7rem;" class="text-muted">${b.unlocked ? 'Terbuka!' : b.desc}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /*************************************************************************
+     * 3. LOGIKA HALAMAN 1: APERSEPSI
+     *************************************************************************/
+    function updateApersepsiVideo() {
+      const rawUrl = document.getElementById('youtubeUrlInput').value.trim();
+      if (!rawUrl) {
+        showToast('Masukkan link YouTube terlebih dahulu.');
+        return;
+      }
+      let embedUrl = rawUrl;
+      const watchMatch = rawUrl.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      if (watchMatch && watchMatch[1]) {
+        embedUrl = `https://www.youtube.com/embed/${watchMatch[1]}`;
+      }
+      appState.apersepsi.videoUrl = embedUrl;
+      document.getElementById('apersepsiVideoFrame').src = embedUrl;
+      saveState();
+      showToast('Video pemantik berhasil diperbarui! 🎬');
+    }
+
+    function saveApersepsiNotes() {
+      appState.apersepsi.q1 = document.getElementById('apersepsiQ1').value;
+      appState.apersepsi.q2 = document.getElementById('apersepsiQ2').value;
+      appState.apersepsi.q3 = document.getElementById('apersepsiQ3').value;
+      saveState();
+    }
+
+    /*************************************************************************
+     * 4. LOGIKA HALAMAN 2: ASESMEN AWAL (5 SOAL DIAGNOSTIK)
+     *************************************************************************/
+    const diagnostikQuestions = [
+      {
+        q: '1. Jika sebuah survei kelas menghasilkan 5.000 baris data nilai siswa, langkah paling efisien menggunakan komputer adalah...',
+        options: [
+          'Menghitung satu per satu menggunakan kalkulator saku',
+          'Menulis skrip program untuk membaca, menjumlahkan, dan merata-ratakan data otomatis',
+          'Mencetak semua data ke kertas lalu menandai dengan stabilo',
+          'Menghapus sebagian data agar mudah dihitung manual'
+        ],
+        correct: 1,
+        feedback: 'Tepat! Pemrograman mengotomatisasi pengolahan ribuan data dalam hitungan milidetik tanpa kesalahan hitung manusia.'
+      },
+      {
+        q: '2. Dalam logika pemrograman Python, data berupa angka desimal seperti rata-rata nilai 88.75 termasuk tipe data...',
+        options: ['String (str)', 'Integer (int)', 'Float (float)', 'Boolean (bool)'],
+        correct: 2,
+        feedback: 'Benar! Tipe data float digunakan untuk menyimpan bilangan pecahan/desimal.'
+      },
+      {
+        q: '3. Simbol manakah yang digunakan di Python untuk membuat struktur data List (daftar kumpulan data)?',
+        options: ['Kurung kurawal { }', 'Kurung siku [ ]', 'Tanda kutip " "', 'Tanda pagar #'],
+        correct: 1,
+        feedback: 'Hebat! Tanda kurung siku [ ] menandai struktur data List, misalnya data = [80, 90, 85].'
+      },
+      {
+        q: '4. Perhatikan potongan kode: angka = [10, 20, 30, 40]. Berapakah hasil dari print(angka[1])?',
+        options: ['10', '20', '30', '40'],
+        correct: 1,
+        feedback: 'Tepat sekali! Indeks di Python dimulai dari 0, sehingga angka[0] adalah 10 dan angka[1] adalah 20.'
+      },
+      {
+        q: '5. Fungsi bawaan Python manakah yang digunakan untuk menghitung banyaknya item dalam sebuah List?',
+        options: ['sum()', 'max()', 'len()', 'count_all()'],
+        correct: 2,
+        feedback: 'Benar! len() (singkatan dari length) menghitung jumlah elemen di dalam sebuah kumpulan data.'
+      }
+    ];
+
+    function renderDiagnostik() {
+      const container = document.getElementById('diagnostikContainer');
+      container.innerHTML = diagnostikQuestions.map((item, idx) => {
+        const chosen = appState.diagnostik.answers[idx];
+        const isAnswered = chosen !== undefined;
+        return `
+          <div class="p-3 p-md-4 rounded-4 border mb-3" style="background: var(--bg-body);">
+            <p class="fw-bold mb-3">${item.q}</p>
+            <div>
+              ${item.options.map((opt, oIdx) => {
+                let cls = 'quiz-option';
+                if (isAnswered) {
+                  cls += ' disabled';
+                  if (oIdx === item.correct) cls += ' correct';
+                  else if (oIdx === chosen) cls += ' wrong';
+                }
+                const letter = ['A', 'B', 'C', 'D'][oIdx];
+                return `
+                  <div class="${cls}" onclick="answerDiagnostik(${idx}, ${oIdx})">
+                    <span class="option-badge">${letter}</span>
+                    <span>${opt}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            ${isAnswered ? `
+              <div class="mt-2 p-2 px-3 rounded-3 small fw-semibold ${chosen === item.correct ? 'text-success bg-success-subtle' : 'text-danger bg-danger-subtle'}">
+                <i class="bi ${chosen === item.correct ? 'bi-check-circle-fill' : 'bi-info-circle-fill'} me-1"></i>
+                ${chosen === item.correct ? item.feedback : 'Kurang tepat. ' + item.feedback}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      updateDiagnostikSummary();
+    }
+
+    function answerDiagnostik(qIdx, oIdx) {
+      if (appState.diagnostik.answers[qIdx] !== undefined) return;
+      appState.diagnostik.answers[qIdx] = oIdx;
+
+      let correctCount = 0;
+      diagnostikQuestions.forEach((q, i) => {
+        if (appState.diagnostik.answers[i] === q.correct) correctCount++;
+      });
+      appState.diagnostik.score = correctCount * 20;
+
+      if (Object.keys(appState.diagnostik.answers).length === diagnostikQuestions.length) {
+        appState.completedModules.diagnostik = true;
+      }
+      saveState();
+      renderDiagnostik();
+    }
+
+    function updateDiagnostikSummary() {
+      document.getElementById('diagScoreBadge').textContent = `Skor: ${appState.diagnostik.score} / 100`;
+      const answeredTotal = Object.keys(appState.diagnostik.answers).length;
+      const box = document.getElementById('diagResultBox');
+      if (answeredTotal === diagnostikQuestions.length) {
+        box.classList.remove('d-none');
+        let msg = '';
+        if (appState.diagnostik.score >= 80) {
+          msg = `Luar biasa! Skor awalmu ${appState.diagnostik.score}. Kamu sudah memiliki fondasi logika Python yang kuat. Silakan eksplorasi Lab Koding dan tantangan HOTS!`;
+        } else {
+          msg = `Skor awalmu ${appState.diagnostik.score}. Tidak masalah! Di Modul 3 (Materi Pembelajaran), kamu akan mempelajari setiap konsep Python langkah demi langkah secara visual.`;
+        }
+        document.getElementById('diagResultText').textContent = msg;
+      } else {
+        box.classList.add('d-none');
+      }
+    }
+
+    function resetDiagnostik() {
+      appState.diagnostik = { answers: {}, score: 0 };
+      appState.completedModules.diagnostik = false;
+      saveState();
+      renderDiagnostik();
+    }
+
+    /*************************************************************************
+     * 5. LOGIKA HALAMAN 3: MINI LIVE PYTHON SANDBOX
+     *************************************************************************/
+    const defaultSandboxCode = `# Produk Analisis Data Penjualan Kantin Sehat (dalam Ribu Rupiah)
+data_penjualan = [120, 150, 95, 180, 210]
+
+total = sum(data_penjualan)
+rata_rata = total / len(data_penjualan)
+tertinggi = max(data_penjualan)
+
+print("=== LAPORAN ANALISIS KANTIN ===")
+print("Total Omzet   : Rp", total, "ribu")
+print("Rata-rata/Hari: Rp", rata_rata, "ribu")
+print("Omzet Tertinggi: Rp", tertinggi, "ribu")`;
+
+    function resetSandboxCode() {
+      document.getElementById('pythonSandboxInput').value = defaultSandboxCode;
+      document.getElementById('pythonSandboxOutput').textContent = 'Kode dikembalikan ke template awal. Klik "Jalankan Kode" untuk mencoba.';
+    }
+
+    function runPythonSandbox() {
+      const code = document.getElementById('pythonSandboxInput').value;
+      const outEl = document.getElementById('pythonSandboxOutput');
+
+      try {
+        // Mini Python-to-JS safe evaluator untuk kebutuhan edukasi dasar (variabel, list, sum, len, max, min, round, print)
+        const lines = code.split('\n');
+        const env = {
+          sum: arr => Array.isArray(arr) ? arr.reduce((a, b) => a + Number(b), 0) : 0,
+          len: arr => (Array.isArray(arr) || typeof arr === 'string') ? arr.length : 0,
+          max: arr => Array.isArray(arr) ? Math.max(...arr) : 0,
+          min: arr => Array.isArray(arr) ? Math.min(...arr) : 0,
+          round: (num, dec = 0) => Number(Math.round(num + 'e' + dec) + 'e-' + dec)
+        };
+        let outputs = [];
+
+        for (let rawLine of lines) {
+          let line = rawLine.trim();
+          if (!line || line.startsWith('#')) continue;
+
+          // Handle print(...)
+          if (line.startsWith('print(') && line.endsWith(')')) {
+            const inner = line.slice(6, -1);
+            const args = splitArgsRespectingQuotes(inner);
+            const evaluatedArgs = args.map(arg => evalExpr(arg.trim(), env));
+            outputs.push(evaluatedArgs.join(' '));
+          } else if (line.includes('=') && !line.includes('==')) {
+            const eqIdx = line.indexOf('=');
+            const varName = line.slice(0, eqIdx).trim();
+            const expr = line.slice(eqIdx + 1).trim();
+            if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(varName)) {
+              throw new Error(`Nama variabel tidak valid: ${varName}`);
+            }
+            env[varName] = evalExpr(expr, env);
+          }
+        }
+
+        outEl.style.color = '#4ade80';
+        outEl.textContent = outputs.length > 0 ? outputs.join('\n') : '(Program selesai dijalankan tanpa output print)';
+        showToast('Kode Python berhasil dijalankan! ▶');
+      } catch (err) {
+        outEl.style.color = '#f87171';
+        outEl.textContent = `SyntaxError / RuntimeError:\n${err.message}\n\nTips: Periksa tanda kurung, koma pada list [ ], atau nama variabel.`;
+      }
+    }
+
+    function splitArgsRespectingQuotes(str) {
+      let res = [];
+      let current = '';
+      let inQuote = null;
+      let depth = 0;
+      for (let ch of str) {
+        if ((ch === '"' || ch === "'") && !inQuote) inQuote = ch;
+        else if (ch === inQuote) inQuote = null;
+        else if (!inQuote && (ch === '(' || ch === '[')) depth++;
+        else if (!inQuote && (ch === ')' || ch === ']')) depth--;
+
+        if (ch === ',' && !inQuote && depth === 0) {
+          res.push(current);
+          current = '';
+        } else {
+          current += ch;
+        }
+      }
+      if (current.trim() !== '') res.push(current);
+      return res;
+    }
+
+    function evalExpr(expr, env) {
+      const keys = Object.keys(env);
+      const vals = Object.values(env);
+      const fn = new Function(...keys, `return (${expr});`);
+      return fn(...vals);
+    }
+
+    /*************************************************************************
+     * 6. LOGIKA HALAMAN 4: SIMULASI (CODE BUILDER & MATCHING PAIRS)
+     *************************************************************************/
+    const builderCorrectOrder = [
+      { id: 'b1', code: 'suhu_server = [24, 26, 25, 29, 26]' },
+      { id: 'b2', code: 'total_suhu = sum(suhu_server)' },
+      { id: 'b3', code: 'rata_suhu = total_suhu / len(suhu_server)' },
+      { id: 'b4', code: 'print("Rata-rata suhu:", rata_suhu, "°C")' }
+    ];
+
+    let builderPool = [];
+    let builderSelected = [];
+
+    function resetCodeBuilder() {
+      builderPool = [...builderCorrectOrder].sort(() => Math.random() - 0.5);
+      builderSelected = [];
+      document.getElementById('builderFeedback').classList.add('d-none');
+      renderCodeBuilder();
+    }
+
+    function renderCodeBuilder() {
+      const poolEl = document.getElementById('codeSourcePool');
+      const targetEl = document.getElementById('codeTargetList');
+
+      poolEl.innerHTML = builderPool.length === 0
+        ? '<div class="text-center text-muted small py-4">Semua blok sudah dipindahkan ke kanan!</div>'
+        : builderPool.map(item => `
+            <div class="code-block-chip" draggable="true" ondragstart="handleDragStart(event, '${item.id}')" onclick="moveBlockToTarget('${item.id}')">
+              <span>${item.code}</span>
+              <i class="bi bi-plus-circle-fill"></i>
+            </div>
+          `).join('');
+
+      if (builderSelected.length === 0) {
+        targetEl.innerHTML = '<div class="text-center text-muted small py-5" id="dropPlaceholder">Letakkan atau klik blok kode secara berurutan di sini...</div>';
+      } else {
+        targetEl.innerHTML = builderSelected.map((item, idx) => `
+          <div class="code-block-chip" style="background: linear-gradient(135deg, #0f766e, #14B8A6); color: #042f2e; font-weight: 700;" onclick="returnBlockToPool('${item.id}')" title="Klik untuk mengembalikan blok">
+            <span><span class="badge bg-dark text-white me-2">${idx + 1}</span>${item.code}</span>
+            <i class="bi bi-x-circle-fill"></i>
+          </div>
+        `).join('');
+      }
+    }
+
+    function handleDragStart(ev, blockId) {
+      ev.dataTransfer.setData('text/plain', blockId);
+    }
+
+    function handleDragOver(ev) {
+      ev.preventDefault();
+      document.getElementById('codeDropZone').classList.add('drag-over');
+    }
+
+    function handleDragLeave(ev) {
+      document.getElementById('codeDropZone').classList.remove('drag-over');
+    }
+
+    function handleDrop(ev) {
+      ev.preventDefault();
+      document.getElementById('codeDropZone').classList.remove('drag-over');
+      const blockId = ev.dataTransfer.getData('text/plain');
+      moveBlockToTarget(blockId);
+    }
+
+    function moveBlockToTarget(blockId) {
+      const idx = builderPool.findIndex(b => b.id === blockId);
+      if (idx > -1) {
+        const [moved] = builderPool.splice(idx, 1);
+        builderSelected.push(moved);
+        renderCodeBuilder();
+      }
+    }
+
+    function returnBlockToPool(blockId) {
+      const idx = builderSelected.findIndex(b => b.id === blockId);
+      if (idx > -1) {
+        const [moved] = builderSelected.splice(idx, 1);
+        builderPool.push(moved);
+        renderCodeBuilder();
+      }
+    }
+
+    function verifyCodeBuilder() {
+      const fb = document.getElementById('builderFeedback');
+      fb.classList.remove('d-none');
+
+      if (builderSelected.length < builderCorrectOrder.length) {
+        fb.innerHTML = `
+          <div class="alert alert-warning rounded-4 mb-0">
+            <strong>🌱 Terus Melangkah (Growth Mindset):</strong> Kamu baru menyusun ${builderSelected.length} dari 4 baris kode. Pindahkan seluruh blok terlebih dahulu agar program lengkap!
+          </div>`;
+        return;
+      }
+
+      const isCorrect = builderSelected.every((b, i) => b.id === builderCorrectOrder[i].id);
+      if (isCorrect) {
+        fb.innerHTML = `
+          <div class="alert alert-success rounded-4 mb-0">
+            <strong>🎉 Luar Biasa! Produk Koding Berhasil Dijalankan:</strong><br/>
+            <code class="d-block bg-dark text-info p-2 rounded-3 mt-2">Output: Rata-rata suhu: 26.0 °C</code>
+            <small class="d-block mt-1">Alur logikamu sangat runtut: Definisi Data → Hitung Total → Hitung Rata-rata → Cetak Hasil.</small>
+          </div>`;
+        appState.simulasi.builderDone = true;
+        checkSimulasiComplete();
+      } else {
+        fb.innerHTML = `
+          <div class="alert alert-danger rounded-4 mb-0">
+            <strong>💡 Belum Tepat, Tapi Ini Proses Belajar Programmer Hebat!</strong><br/>
+            Komputer membaca kode dari atas ke bawah. Pastikan variabel <code>suhu_server</code> didefinisikan paling awal sebelum dijumlahkan dengan <code>sum()</code>, dan perintah <code>print()</code> berada di baris paling akhir. Klik blok di kanan untuk mengatur ulang!
+          </div>`;
+      }
+    }
+
+    // Aktivitas 2: Matching Pairs
+    const matchingPairsData = [
+      { id: 'm1', left: 'len([10, 20, 30, 40])', right: '4 (Jumlah elemen dalam List)' },
+      { id: 'm2', left: 'max([75, 98, 82])', right: '98 (Nilai tertinggi dataset)' },
+      { id: 'm3', left: '{"kelas": "XII"}["kelas"]', right: '"XII" (Akses nilai Dictionary)' },
+      { id: 'm4', left: 'round(86.6667, 1)', right: '86.7 (Pembulatan 1 desimal)' }
+    ];
+
+    let selectedLeftId = null;
+    let matchedIds = [];
+
+    function initMatchingGame() {
+      selectedLeftId = null;
+      matchedIds = [];
+      document.getElementById('matchingFeedback').classList.add('d-none');
+
+      const leftCol = document.getElementById('matchLeftCol');
+      const rightCol = document.getElementById('matchRightCol');
+
+      const shuffledRight = [...matchingPairsData].sort(() => Math.random() - 0.5);
+
+      leftCol.innerHTML = matchingPairsData.map(item => `
+        <div class="match-card font-code small mb-2" id="left-${item.id}" onclick="pickLeftMatch('${item.id}')">
+          ${item.left}
+        </div>
+      `).join('');
+
+      rightCol.innerHTML = shuffledRight.map(item => `
+        <div class="match-card small mb-2" id="right-${item.id}" onclick="pickRightMatch('${item.id}')">
+          ${item.right}
+        </div>
+      `).join('');
+    }
+
+    function pickLeftMatch(id) {
+      if (matchedIds.includes(id)) return;
+      document.querySelectorAll('#matchLeftCol .match-card').forEach(el => el.classList.remove('active-pick'));
+      selectedLeftId = id;
+      document.getElementById('left-' + id).classList.add('active-pick');
+    }
+
+    function pickRightMatch(rightId) {
+      if (matchedIds.includes(rightId)) return;
+      const fb = document.getElementById('matchingFeedback');
+      fb.classList.remove('d-none');
+
+      if (!selectedLeftId) {
+        fb.innerHTML = `<div class="alert alert-info rounded-4 py-2 small mb-0">Pilih dulu kartu kode di kolom sebelah kiri ya!</div>`;
+        return;
+      }
+
+      if (selectedLeftId === rightId) {
+        matchedIds.push(rightId);
+        document.getElementById('left-' + rightId).classList.remove('active-pick');
+        document.getElementById('left-' + rightId).classList.add('matched');
+        document.getElementById('right-' + rightId).classList.add('matched');
+        selectedLeftId = null;
+
+        if (matchedIds.length === matchingPairsData.length) {
+          fb.innerHTML = `<div class="alert alert-success rounded-4 py-2 small mb-0"><strong>🌟 Sempurna!</strong> Semua pasangan sintaks dan output berhasil kamu cocokkan!</div>`;
+          appState.simulasi.matchingDone = true;
+          checkSimulasiComplete();
+        } else {
+          fb.innerHTML = `<div class="alert alert-success rounded-4 py-2 small mb-0"><strong>Cocok!</strong> Lanjutkan mencocokkan sisa kartu lainnya.</div>`;
+        }
+      } else {
+        fb.innerHTML = `<div class="alert alert-warning rounded-4 py-2 small mb-0"><strong>🌱 Hampir tepat!</strong> Perhatikan nama fungsi atau tipe tanda kurungnya, lalu coba pasangkan lagi.</div>`;
+      }
+    }
+
+    function checkSimulasiComplete() {
+      const count = (appState.simulasi.builderDone ? 1 : 0) + (appState.simulasi.matchingDone ? 1 : 0);
+      document.getElementById('simulasiStatusBadge').textContent = `Aktivitas: ${count}/2 Selesai`;
+      if (count === 2) {
+        appState.completedModules.simulasi = true;
+        showToast('Selamat! Seluruh simulasi koding selesai 🏆');
+      }
+      saveState();
+    }
+
+    /*************************************************************************
+     * 7. LOGIKA HALAMAN 5: KUIS INTERAKTIF (10 SOAL HOTS + TIMER + PEMBAHASAN)
+     *************************************************************************/
+    const hotsQuizData = [
+      {
+        q: 'Perhatikan potongan kode Python berikut:\n\ndata = [70, 85, 90, 65, 95]\nhasil = [x for x in data if x >= 80]\nprint(len(hasil))\n\nBerapakah output yang dihasilkan oleh program tersebut?',
+        options: ['2', '3', '4', '5'],
+        correct: 1,
+        explanation: 'List comprehension menyaring elemen yang bernilai >= 80, yaitu [85, 90, 95]. Fungsi len(hasil) menghitung jumlah elemennya yaitu 3.'
+      },
+      {
+        q: 'Seorang siswa menulis kode:\n\nharga = "25000"\njumlah = 3\ntotal = harga * jumlah\nprint(total)\n\nMengapa hasil yang muncul adalah "250002500025000" dan bukan 75000?',
+        options: [
+          'Karena Python tidak bisa melakukan perkalian bilangan ribuan',
+          'Karena variabel harga bertipe String (str), sehingga operator * menggandakan teks',
+          'Karena variabel jumlah harus diubah menjadi float terlebih dahulu',
+          'Karena fungsi print() salah penulisan'
+        ],
+        correct: 1,
+        explanation: 'Tanda kutip pada "25000" menjadikannya tipe String. Mengalikan String dengan integer n akan mengulang teks sebanyak n kali. Solusinya gunakan int(harga).'
+      },
+      {
+        q: 'Diberikan dataset siswa dalam bentuk List of Dictionaries:\n\nkelas = [{"nama": "Budi", "skor": 82}, {"nama": "Siti", "skor": 94}]\n\nSintaks manakah yang tepat untuk mengambil nilai skor milik Siti?',
+        options: ['kelas[1]["skor"]', 'kelas[2]["skor"]', 'kelas["Siti"]["skor"]', 'kelas[0]["skor"]'],
+        correct: 0,
+        explanation: 'Data Siti berada pada elemen kedua List, sehingga indeksnya adalah 1 (zero-based index), lalu diakses kunci dictionary ["skor"].'
+      },
+      {
+        q: 'Perhatikan kode analisis data kehadiran berikut:\n\nhadir = [28, 30, 29, 25]\nrerata = sum(hadir) / len(hadir)\nif rerata > 28:\n    print("Tinggi")\nelif rerata == 28:\n    print("Pas")\nelse:\n    print("Rendah")\n\nApakah output yang dicetak?',
+        options: ['Tinggi', 'Pas', 'Rendah', 'Error karena pembagian desimal'],
+        correct: 1,
+        explanation: 'sum(hadir) = 28 + 30 + 29 + 25 = 112. Dibagi len(hadir) = 4 menghasilkan 28.0. Kondisi elif rerata == 28 bernilai True sehingga mencetak "Pas".'
+      },
+      {
+        q: 'Kamu diminta membuat program yang mencari selisih (range) antara nilai tertinggi dan nilai terendah dari List bernama `nilai_ujian`. Rumus Python yang paling efisien adalah...',
+        options: [
+          'nilai_ujian[0] - nilai_ujian[-1]',
+          'max(nilai_ujian) - min(nilai_ujian)',
+          'sum(nilai_ujian) / len(nilai_ujian)',
+          'len(nilai_ujian) - min(nilai_ujian)'
+        ],
+        correct: 1,
+        explanation: 'Dalam statistika dasar, jangkauan (range) adalah nilai maksimum dikurangi nilai minimum, yaitu max(nilai_ujian) - min(nilai_ujian).'
+      },
+      {
+        q: 'Apa yang terjadi jika kita menjalankan kode berikut?\n\nangka = [12, 15, 18]\nprint(angka[3])',
+        options: [
+          'Mencetak 18',
+          'Mencetak 0',
+          'Muncul IndexError: list index out of range',
+          'Mencetak 12'
+        ],
+        correct: 2,
+        explanation: 'List berisi 3 elemen hanya memiliki indeks 0, 1, dan 2. Memanggil indeks 3 melampaui batas panjang List sehingga memicu IndexError.'
+      },
+      {
+        q: 'Perhatikan perulangan berikut:\n\ntotal = 0\nfor n in [10, 20, 30]:\n    if n > 15:\n        total += n\nprint(total)\n\nBerapakah nilai akhir variabel total?',
+        options: ['10', '30', '50', '60'],
+        correct: 2,
+        explanation: 'Perulangan hanya menjumlahkan elemen yang lebih besar dari 15, yaitu 20 + 30 = 50.'
+      },
+      {
+        q: 'Dalam analisis data survei ekstrakurikuler, kita ingin menyimpan pasangan nama ekstrakurikuler dan jumlah peminatnya (contoh: Futsal: 45, Robotik: 32). Struktur data Python yang paling tepat adalah...',
+        options: ['Integer', 'Boolean', 'Dictionary', 'Float'],
+        correct: 2,
+        explanation: 'Dictionary memetakan key (nama ekskul) ke value (jumlah peminat) sehingga pencarian data berdasarkan kategori sangat cepat.'
+      },
+      {
+        q: 'Diketahui kode:\n\npi_approx = 22 / 7\nprint(round(pi_approx, 2))\n\nOutput yang tampil di layar adalah...',
+        options: ['3', '3.1', '3.14', '3.142857'],
+        correct: 2,
+        explanation: '22 / 7 bernilai 3.142857... Fungsi round(angka, 2) membulatkannya hingga 2 angka di belakang koma menjadi 3.14.'
+      },
+      {
+        q: 'Mengapa komentar (#) sangat penting saat menulis skrip Python untuk analisis data tim?',
+        options: [
+          'Mempercepat eksekusi prosesor komputer hingga 2 kali lipat',
+          'Mendokumentasikan logika rumus/filter data agar mudah dipahami rekan tim maupun diri sendiri di masa depan',
+          'Mengubah tipe data teks menjadi angka otomatis',
+          'Menghapus bug sintaks secara otomatis'
+        ],
+        correct: 1,
+        explanation: 'Komentar (#) diabaikan oleh interpreter Python saat dijalankan, tetapi sangat krusial bagi manusia untuk membaca alur pembersihan dan analisis data.'
+      }
+    ];
+
+    function startQuizTimer() {
+      if (quizTimerInterval) return;
+      quizTimerInterval = setInterval(() => {
+        appState.kuis.elapsedSeconds++;
+        document.getElementById('quizTimerDisplay').textContent = formatTime(appState.kuis.elapsedSeconds);
+      }, 1000);
+    }
+
+    function stopQuizTimer() {
+      clearInterval(quizTimerInterval);
+      quizTimerInterval = null;
+    }
+
+    function formatTime(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function renderHotsQuiz() {
+      document.getElementById('quizTimerDisplay').textContent = formatTime(appState.kuis.elapsedSeconds);
+      document.getElementById('quizScoreHeader').textContent = `Skor: ${appState.kuis.score}`;
+
+      const playArea = document.getElementById('quizPlayArea');
+      const summaryArea = document.getElementById('quizSummaryArea');
+
+      if (appState.kuis.finished) {
+        playArea.classList.add('d-none');
+        summaryArea.classList.remove('d-none');
+        document.getElementById('quizQuestionCounter').textContent = 'Selesai (10 dari 10 Soal)';
+        document.getElementById('quizProgressPercent').textContent = '100%';
+        document.getElementById('quizProgressBar').style.width = '100%';
+
+        summaryArea.innerHTML = `
+          <div class="p-4 rounded-4 text-center mb-4" style="background: linear-gradient(135deg, var(--color-indigo), var(--color-purple)); color: #fff;">
+            <h3 class="fw-extrabold mb-1">🎉 Kuis HOTS Selesai!</h3>
+            <p class="mb-2 opacity-90">Waktu pengerjaan: <strong>${formatTime(appState.kuis.elapsedSeconds)}</strong></p>
+            <div class="display-4 fw-extrabold my-2" style="color: var(--color-coral);">${appState.kuis.score} <span class="fs-5 text-white">/ 100</span></div>
+            <button class="btn btn-coral btn-sm mt-2" onclick="restartHotsQuiz()">Ulangi Kuis HOTS</button>
+          </div>
+          <h5 class="fw-bold mb-3"><i class="bi bi-journal-check me-2"></i>Pembahasan Lengkap Setiap Soal</h5>
+          ${hotsQuizData.map((item, idx) => {
+            const userAns = appState.kuis.answers[idx];
+            const isRight = userAns === item.correct;
+            return `
+              <div class="p-3 rounded-4 border mb-3" style="background: var(--bg-body);">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="badge ${isRight ? 'text-bg-success' : 'text-bg-danger'}">Soal #${idx + 1} • ${isRight ? 'Benar (+10)' : 'Kurang Tepat'}</span>
+                </div>
+                <pre class="bg-dark text-light p-3 rounded-3 small mb-2" style="white-space: pre-wrap;">${item.q}</pre>
+                <p class="small mb-1"><strong>Jawaban Kamu:</strong> ${userAns !== undefined ? item.options[userAns] : '-'}</p>
+                <p class="small mb-2 text-success"><strong>Kunci Jawaban:</strong> ${item.options[item.correct]}</p>
+                <div class="callout-tosca py-2 px-3 small">
+                  <strong>Pembahasan:</strong> ${item.explanation}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        `;
+        return;
+      }
+
+      playArea.classList.remove('d-none');
+      summaryArea.classList.add('d-none');
+
+      const idx = appState.kuis.currentIdx;
+      const item = hotsQuizData[idx];
+      const pct = Math.round(((idx + 1) / hotsQuizData.length) * 100);
+
+      document.getElementById('quizQuestionCounter').textContent = `Soal ${idx + 1} dari ${hotsQuizData.length}`;
+      document.getElementById('quizProgressPercent').textContent = `${pct}%`;
+      document.getElementById('quizProgressBar').style.width = `${pct}%`;
+
+      const selectedOpt = appState.kuis.answers[idx];
+
+      playArea.innerHTML = `
+        <div class="p-3 p-md-4 rounded-4 border mb-3" style="background: var(--bg-body);">
+          <pre class="bg-dark text-info p-3 rounded-4 mb-3 font-code" style="white-space: pre-wrap; font-size: 0.92rem;">${item.q}</pre>
+          <div>
+            ${item.options.map((opt, oIdx) => `
+              <div class="quiz-option ${selectedOpt === oIdx ? 'selected' : ''}" onclick="selectHotsOption(${idx}, ${oIdx})">
+                <span class="option-badge">${['A', 'B', 'C', 'D'][oIdx]}</span>
+                <span>${opt}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <button class="btn btn-outline-secondary rounded-3 fw-bold" ${idx === 0 ? 'disabled' : ''} onclick="moveHotsQuestion(-1)">
+            <i class="bi bi-chevron-left"></i> Soal Sebelumnya
+          </button>
+          ${idx < hotsQuizData.length - 1 ? `
+            <button class="btn btn-indigo" onclick="moveHotsQuestion(1)">
+              Soal Berikutnya <i class="bi bi-chevron-right"></i>
+            </button>
+          ` : `
+            <button class="btn btn-coral" onclick="finishHotsQuiz()">
+              Selesai & Lihat Pembahasan <i class="bi bi-check2-all"></i>
+            </button>
+          `}
+        </div>
+      `;
+    }
+
+    function selectHotsOption(qIdx, oIdx) {
+      appState.kuis.answers[qIdx] = oIdx;
+      saveState();
+      renderHotsQuiz();
+    }
+
+    function moveHotsQuestion(delta) {
+      const next = appState.kuis.currentIdx + delta;
+      if (next >= 0 && next < hotsQuizData.length) {
+        appState.kuis.currentIdx = next;
+        saveState();
+        renderHotsQuiz();
+      }
+    }
+
+    function finishHotsQuiz() {
+      if (Object.keys(appState.kuis.answers).length < hotsQuizData.length) {
+        showToast('Masih ada soal yang belum dijawab. Lengkapi 10 soal dulu ya!');
+        return;
+      }
+      let correctCount = 0;
+      hotsQuizData.forEach((item, idx) => {
+        if (appState.kuis.answers[idx] === item.correct) correctCount++;
+      });
+      appState.kuis.score = correctCount * 10;
+      appState.kuis.finished = true;
+      appState.completedModules.kuis = true;
+      stopQuizTimer();
+      saveState();
+      renderHotsQuiz();
+      showToast(`Kuis HOTS selesai! Skor kamu: ${appState.kuis.score}`);
+    }
+
+    function restartHotsQuiz() {
+      appState.kuis = { currentIdx: 0, answers: {}, finished: false, score: 0, elapsedSeconds: 0 };
+      appState.completedModules.kuis = false;
+      saveState();
+      renderHotsQuiz();
+      startQuizTimer();
+    }
+
+    /*************************************************************************
+     * 8. LOGIKA HALAMAN 6: ASESMEN AKHIR (10 SOAL SUMATIF + PREDIKAT + KONFETI)
+     *************************************************************************/
+    const finalExamQuestions = [
+      {
+        q: '1. Dalam siklus analisis data menggunakan Python, urutan tahapan pemrosesan yang paling logis untuk menghasilkan produk laporan nilai adalah...',
+        options: [
+          'Cetak Laporan → Input Dataset → Hitung Statistik → Validasi Tipe Data',
+          'Input Dataset → Validasi Tipe Data → Pengolahan Logika & Statistik → Cetak Output Produk',
+          'Hitung Statistik → Hapus Variabel → Input Dataset → Cetak Laporan',
+          'Validasi Output → Input Variabel → Kompilasi Browser'
+        ],
+        correct: 1
+      },
+      {
+        q: '2. Diberikan kode:\n\nnilai = [80, 90, 85, 95]\nrata = sum(nilai) / len(nilai)\nprint(type(rata))\n\nTipe data yang dicetak oleh program di atas adalah...',
+        options: ["<class 'int'>", "<class 'str'>", "<class 'float'>", "<class 'list'>"],
+        correct: 2
+      },
+      {
+        q: '3. Seorang analis data sekolah menggabungkan dua input kuesioner: a = "90" dan b = "85". Agar operasi a + b menghasilkan angka 175, kode yang benar adalah...',
+        options: ['print(a + b)', 'print(int(a) + int(b))', 'print(str(a) + str(b))', 'print(len(a) + len(b))'],
+        correct: 1
+      },
+      {
+        q: '4. Perhatikan potongan kode:\n\nproduk = {"nama": "Laptop", "stok": 15, "harga": 7500000}\nproduk["stok"] = produk["stok"] - 3\nprint(produk["stok"])\n\nOutput yang dihasilkan adalah...',
+        options: ['15', '12', '3', 'Error'],
+        correct: 1
+      },
+      {
+        q: '5. Manakah potongan kode percabangan Python yang benar untuk menentukan predikat "Sangat Baik" jika nilai minimal 90?',
+        options: [
+          'if nilai => 90: print("Sangat Baik")',
+          'if nilai >= 90: print("Sangat Baik")',
+          'if (nilai >= 90) then print("Sangat Baik")',
+          'when nilai >= 90: print("Sangat Baik")'
+        ],
+        correct: 1
+      },
+      {
+        q: '6. Diberikan List data pengunjung perpustakaan selama 5 hari:\npengunjung = [42, 55, 38, 61, 49]\n\nBerapakah selisih antara pengunjung terbanyak dan tersedikit?',
+        options: ['13', '19', '23', '27'],
+        correct: 2
+      },
+      {
+        q: '7. Perhatikan perulangan berikut:\n\ncount = 0\nfor skor in [65, 78, 92, 88, 70, 95]:\n    if skor >= 85:\n        count += 1\nprint(count)\n\nApa makna informasi yang dihasilkan oleh variabel count?',
+        options: [
+          'Total seluruh skor siswa',
+          'Rata-rata skor siswa yang lulus',
+          'Banyaknya siswa yang memperoleh skor minimal 85',
+          'Nilai tertinggi di dalam kelas'
+        ],
+        correct: 2
+      },
+      {
+        q: '8. Jika sebuah Dictionary `santri = {"nama": "Zaid", "kelas": "XII"}` diakses dengan `santri["nilai"]` padahal kunci "nilai" belum ada, apa yang terjadi?',
+        options: [
+          'Python otomatis mengembalikan angka 0',
+          'Python memunculkan KeyError karena kunci tidak ditemukan',
+          'Dictionary otomatis menambahkan kunci baru',
+          'Program mencetak None tanpa error'
+        ],
+        correct: 1
+      },
+      {
+        q: '9. Perhatikan kode:\n\nangka = [2, 4, 6, 8]\nhasil = (angka[0] + angka[-1]) * 2\nprint(hasil)\n\nBerapakah nilai yang dicetak?',
+        options: ['12', '16', '20', '28'],
+        correct: 2
+      },
+      {
+        q: '10. Sebuah program analisis data menghasilkan rata-rata 89.4567. Agar tampilan pada sertifikat digital rapi dengan 2 angka di belakang koma (89.46), fungsi yang digunakan adalah...',
+        options: ['round(89.4567, 2)', 'int(89.4567)', 'len(89.4567, 2)', 'max(89.4567, 2)'],
+        correct: 0
+      }
+    ];
+
+    function startExamTimer() {
+      if (examTimerInterval) return;
+      examTimerInterval = setInterval(() => {
+        appState.asesmen.elapsedSeconds++;
+        document.getElementById('examTimerDisplay').textContent = formatTime(appState.asesmen.elapsedSeconds);
+      }, 1000);
+    }
+
+    function stopExamTimer() {
+      clearInterval(examTimerInterval);
+      examTimerInterval = null;
+    }
+
+    function renderFinalExam() {
+      document.getElementById('examTimerDisplay').textContent = formatTime(appState.asesmen.elapsedSeconds);
+      const container = document.getElementById('examQuestionsContainer');
+
+      container.innerHTML = finalExamQuestions.map((item, idx) => {
+        const chosen = appState.asesmen.answers[idx];
+        const submitted = appState.asesmen.submitted;
+        return `
+          <div class="p-3 p-md-4 rounded-4 border mb-3" style="background: var(--bg-body);">
+            <pre class="fw-bold mb-3 font-heading" style="white-space: pre-wrap; font-size: 0.98rem;">${item.q}</pre>
+            <div>
+              ${item.options.map((opt, oIdx) => {
+                let cls = 'quiz-option';
+                if (submitted) {
+                  cls += ' disabled';
+                  if (oIdx === item.correct) cls += ' correct';
+                  else if (oIdx === chosen) cls += ' wrong';
+                } else if (chosen === oIdx) {
+                  cls += ' selected';
+                }
+                return `
+                  <div class="${cls}" onclick="selectExamOption(${idx}, ${oIdx})">
+                    <span class="option-badge">${['A', 'B', 'C', 'D'][oIdx]}</span>
+                    <span class="font-code small">${opt}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const submitWrapper = document.getElementById('examSubmitWrapper');
+      const resultCard = document.getElementById('examResultCard');
+
+      if (appState.asesmen.submitted) {
+        submitWrapper.classList.add('d-none');
+        resultCard.classList.remove('d-none');
+        const score = appState.asesmen.score;
+        const pred = appState.asesmen.predicate;
+        let badgeColor = '#ef4444';
+        if (score >= 90) badgeColor = '#10b981';
+        else if (score >= 80) badgeColor = '#3b82f6';
+        else if (score >= 70) badgeColor = '#f59e0b';
+
+        resultCard.innerHTML = `
+          <div class="p-4 p-md-5 rounded-4 text-center border shadow-sm" style="background: linear-gradient(135deg, var(--color-indigo-soft), var(--color-coral-soft));">
+            <span class="badge rounded-pill px-3 py-2 mb-2 text-white" style="background: ${badgeColor};">HASIL EVALUASI SUMATIF</span>
+            <h3 class="fw-extrabold mb-1">${appState.studentName || 'Peserta Didik'} (${appState.studentClass || 'Kelas XII'})</h3>
+            <p class="text-muted small mb-3">Durasi Pengerjaan: ${formatTime(appState.asesmen.elapsedSeconds)}</p>
+            <div class="display-3 fw-extrabold my-2" style="color: var(--color-indigo);">${score}</div>
+            <div class="h4 fw-bold mb-3" style="color: var(--color-purple);">Predikat: ${pred}</div>
+            <p class="small mx-auto mb-4" style="max-width: 520px;">
+              Kategori Penilaian: 90–100 (Sangat Baik) • 80–89 (Baik) • 70–79 (Cukup) • &lt;70 (Perlu Bimbingan).
+            </p>
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+              <button class="btn btn-coral" onclick="navigateTo('sertifikat')">
+                <i class="bi bi-award-fill me-1"></i> Lihat & Unduh Sertifikat
+              </button>
+              <button class="btn btn-outline-secondary rounded-4 fw-bold" onclick="resetExam()">Ulangi Asesmen Akhir</button>
+            </div>
+          </div>
+        `;
+      } else {
+        submitWrapper.classList.remove('d-none');
+        resultCard.classList.add('d-none');
+      }
+    }
+
+    function selectExamOption(qIdx, oIdx) {
+      if (appState.asesmen.submitted) return;
+      appState.asesmen.answers[qIdx] = oIdx;
+      saveState();
+      renderFinalExam();
+    }
+
+    function getPredicate(score) {
+      if (score >= 90) return 'Sangat Baik';
+      if (score >= 80) return 'Baik';
+      if (score >= 70) return 'Cukup';
+      return 'Perlu Bimbingan';
+    }
+
+    function submitFinalExam() {
+      const answeredCount = Object.keys(appState.asesmen.answers).length;
+      if (answeredCount < finalExamQuestions.length) {
+        showToast(`Baru ${answeredCount}/10 soal terjawab. Lengkapi semua soal terlebih dahulu!`);
+        return;
+      }
+
+      let correctCount = 0;
+      finalExamQuestions.forEach((item, idx) => {
+        if (appState.asesmen.answers[idx] === item.correct) correctCount++;
+      });
+
+      const finalScore = correctCount * 10;
+      const predicate = getPredicate(finalScore);
+
+      appState.asesmen.submitted = true;
+      appState.asesmen.score = finalScore;
+      appState.asesmen.predicate = predicate;
+      appState.completedModules.asesmen = true;
+
+      stopExamTimer();
+      saveState();
+      renderFinalExam();
+      updateCertificateView();
+
+      if (finalScore >= 90) {
+        triggerConfettiCelebration();
+        showToast('LUAR BIASA! Nilai ≥ 90 (Sangat Baik) 🎉🎊');
+      } else {
+        showToast(`Asesmen selesai! Nilai akhir kamu: ${finalScore} (${predicate})`);
+      }
+    }
+
+    function resetExam() {
+      appState.asesmen = {
+        answers: {},
+        submitted: false,
+        score: null,
+        predicate: 'Belum Dinilai',
+        elapsedSeconds: 0
+      };
+      appState.completedModules.asesmen = false;
+      saveState();
+      renderFinalExam();
+      if (currentPage === 'asesmen') startExamTimer();
+    }
+
+    function triggerConfettiCelebration() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#F8B2B2', '#8B639B', '#403D88', '#14B8A6', '#FBBF24']
+        });
+      }
+    }
+
+    /*************************************************************************
+     * 9. LOGIKA HALAMAN 7: REFLEKSI & UNDUH LAPORAN HASIL BELAJAR
+     *************************************************************************/
+    function saveReflection(notify = false) {
+      appState.refleksi.r1 = document.getElementById('refleksi1').value;
+      appState.refleksi.r2 = document.getElementById('refleksi2').value;
+      appState.refleksi.r3 = document.getElementById('refleksi3').value;
+      appState.refleksi.r4 = document.getElementById('refleksi4').value;
+
+      if (appState.refleksi.r1.trim() || appState.refleksi.r2.trim()) {
+        appState.completedModules.refleksi = true;
+      }
+      saveState();
+      if (notify) showToast('Catatan refleksi berhasil disimpan! 🪞');
+    }
+
+    function downloadLearningReport() {
+      const nama = appState.studentName || 'Peserta Didik';
+      const kelas = appState.studentClass || 'XII';
+      const tanggal = getIndonesianDate();
+
+      const reportContent = `====================================================================
+LAPORAN HASIL BELAJAR & REFLEKSI PESERTA DIDIK
+SMA KHALIFAH BOARDING SCHOOL
+====================================================================
+Mata Pelajaran : Informatika — Analisis Data
+Sub Materi     : Dasar-dasar Pemrograman Python
+Guru Pengampu  : Muhammad Irpan, S.Kom
+Tanggal        : ${tanggal}
+
+IDENTITAS PESERTA DIDIK
+Nama Lengkap   : ${nama}
+Kelas          : ${kelas}
+
+REKAPITULASI CAPAIAN SKOR
+1. Skor Asesmen Awal (Diagnostik) : ${appState.diagnostik.score} / 100
+2. Skor Kuis Interaktif HOTS       : ${appState.kuis.score} / 100
+3. Nilai Asesmen Akhir             : ${appState.asesmen.score !== null ? appState.asesmen.score : 'Belum Dikerjakan'}
+4. Predikat Akhir                  : ${appState.asesmen.predicate}
+
+CATATAN REFLEKSI DEEP LEARNING
+1. Saya sudah memahami:
+   ${appState.refleksi.r1 || '-'}
+
+2. Hal yang paling menarik adalah:
+   ${appState.refleksi.r2 || '-'}
+
+3. Hal yang masih membingungkan adalah:
+   ${appState.refleksi.r3 || '-'}
+
+4. Rencana saya setelah belajar materi ini adalah:
+   ${appState.refleksi.r4 || '-'}
+====================================================================`;
+
+      const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Hasil_Belajar_Python_${nama.replace(/\s+/g, '_')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('File laporan hasil belajar berhasil diunduh 📥');
+    }
+
+    /*************************************************************************
+     * 10. LOGIKA HALAMAN 8: SERTIFIKAT HASIL BELAJAR (PDF & PRINT)
+     *************************************************************************/
+    function getIndonesianDate() {
+      const bulan = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      ];
+      const now = new Date();
+      return `${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+    }
+
+    function updateCertificateView() {
+      const nama = appState.studentName.trim() || 'PESERTA DIDIK SMA';
+      const kelas = appState.studentClass.trim() || 'XII';
+      const nilai = appState.asesmen.score !== null ? appState.asesmen.score : '-';
+      const predikat = appState.asesmen.predicate;
+
+      document.getElementById('certDisplayStudentName').textContent = nama.toUpperCase();
+      document.getElementById('certDisplayClass').textContent = kelas;
+      document.getElementById('certDisplayScore').textContent = nilai;
+      document.getElementById('certDisplayPredicate').textContent = predikat;
+      document.getElementById('certDisplayDate').textContent = getIndonesianDate();
+      document.getElementById('certYearText').textContent = new Date().getFullYear();
+    }
+
+    function downloadCertificatePDF() {
+      updateCertificateView();
+      const element = document.getElementById('certificatePrintArea');
+      const namaFile = (appState.studentName.trim() || 'Siswa_XII').replace(/\s+/g, '_');
+
+      if (typeof html2pdf !== 'undefined') {
+        showToast('Menyiapkan file PDF sertifikat... ⏳');
+        const opt = {
+          margin: 8,
+          filename: `Sertifikat_AnalisisData_Python_${namaFile}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+        html2pdf().set(opt).from(element).save().then(() => {
+          showToast('Sertifikat PDF berhasil diunduh! 🎓');
+        });
+      } else {
+        window.print();
+      }
+    }
+
+    function printCertificate() {
+      updateCertificateView();
+      window.print();
+    }
+
+    /*************************************************************************
+     * 11. RESET SEMUA PROGRESS & INISIALISASI AWAL
+     *************************************************************************/
+    function confirmResetAllProgress() {
+      localStorage.removeItem(STORAGE_KEY);
+      appState = JSON.parse(JSON.stringify(defaultState));
+      stopQuizTimer();
+      stopExamTimer();
+      initializeApp();
+      navigateTo('home');
+      showToast('Semua progres telah di-reset. Selamat belajar kembali! 🔄');
+    }
+
+    function initializeApp() {
+      applyTheme();
+      syncStudentProfile(appState.studentName, appState.studentClass);
+
+      // Restore Apersepsi
+      document.getElementById('apersepsiVideoFrame').src = appState.apersepsi.videoUrl;
+      document.getElementById('apersepsiQ1').value = appState.apersepsi.q1;
+      document.getElementById('apersepsiQ2').value = appState.apersepsi.q2;
+      document.getElementById('apersepsiQ3').value = appState.apersepsi.q3;
+
+      // Restore Refleksi
+      document.getElementById('refleksi1').value = appState.refleksi.r1;
+      document.getElementById('refleksi2').value = appState.refleksi.r2;
+      document.getElementById('refleksi3').value = appState.refleksi.r3;
+      document.getElementById('refleksi4').value = appState.refleksi.r4;
+
+      // Render modul interaktif
+      renderDiagnostik();
+      resetCodeBuilder();
+      initMatchingGame();
+      checkSimulasiComplete();
+      renderHotsQuiz();
+      renderFinalExam();
+      updateCertificateView();
+      updateGlobalProgressUI();
+      renderBadges();
+    }
+
+    window.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
+</body>
+</html>
